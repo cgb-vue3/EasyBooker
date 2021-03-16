@@ -1,10 +1,10 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, Ref } from 'vue'
 
-const useClickOutside = (element: any) => {
+const useClickOutside = (element: Ref) => {
     const isClickOutside = ref(false)
 
     const handleClick = (e: MouseEvent) => {
-        if(!element.value.contains(e.target)) {
+        if (!element.value.contains(e.target)) {
             isClickOutside.value = true
         } else {
             isClickOutside.value = false
