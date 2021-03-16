@@ -1,18 +1,7 @@
 <template>
 	<div class="bg-white border-bottom">
 		<div class="container w-75">
-			<GlobalHeader msg="Welcome to Your Vue.js + TypeScript App" />
-			<drop-down title="DUING">
-				<drop-down-item>
-					编辑
-				</drop-down-item>
-				<drop-down-item>
-					我的专栏
-				</drop-down-item>
-				<drop-down-item>
-					退出
-				</drop-down-item>
-			</drop-down>
+			<GlobalHeader :user="User"/>
 		</div>
 	</div>
 
@@ -23,23 +12,25 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import GlobalHeader from './components/GlobalHeader.vue'
+import GlobalHeader, {UserProps} from './components/GlobalHeader.vue'
 import ColumnList from './components/ColumnList.vue'
-import DropDown from './components/DropDown.vue'
-import DropDownItem from './components/DropDownItem.vue'
 import {Columns} from './hooks/testData'
 
+const User: UserProps = {
+	isLogin: true,
+	name: 'DUING',
+	id: 101
+}
 export default defineComponent({
 	name: 'App',
 	components: {
 		GlobalHeader,
 		ColumnList,
-		DropDownItem,
-		DropDown
 	},
 	setup() {
 		return {
-			Columns
+			Columns,
+			User
 		}
 	}
 })

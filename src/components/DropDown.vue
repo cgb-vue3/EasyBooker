@@ -6,13 +6,13 @@
 			id="dropdownMenuButton"
 			data-bs-toggle="dropdown"
 			aria-expanded="false"
-            @click="isShowRef = !isShowRef"
+			@click="isShowRef = !isShowRef"
 			ref="dropdownRef"
 		>
 			{{ DropDownTitle }}
 		</button>
 		<ul
-            v-if="isShowRef"
+			v-if="isShowRef"
 			class="dropdown-menu py-0"
 			aria-labelledby="dropdownMenuButton"
 			:style="{ display: 'block' }"
@@ -22,7 +22,8 @@
 	</div>
 </template>
 <script>
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import useClickOutside from '../hooks/useClickOutside.ts'
 
 export default defineComponent({
 	props: {
@@ -36,27 +37,16 @@ export default defineComponent({
 		const isShowRef = ref(false)
 		const dropdownRef = ref(null)
 
-		const handleClick = (e) => {
-			if(!dropdownRef.value.contains(e.target) && isShowRef.value) {
+		const isOut = useClickOutside(dropdownRef)
+		watch(isOut, () => {
+			if(isOut.value) {
 				isShowRef.value = false
 			}
-
-			// if (e.target.className.indexOf('dropdown-toggle') < 0) {
-			// 	isShowRef.value = false
-			// }
-		}
-		onMounted(() => {
-			document.addEventListener('click', handleClick)
-
-		})
-
-		onUnmounted(() => {
-			document.removeEventListener('click', handleClick)
 		})
 		return {
 			DropDownTitle,
 			isShowRef,
-			dropdownRef
+			dropdownRef,
 		}
 	},
 })
