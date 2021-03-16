@@ -18,7 +18,8 @@
 	</div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, PropType, reactive } from 'vue'
+import { defineComponent, ref, PropType, reactive, onMounted } from 'vue'
+import {emitter} from './ValidateForm.vue'
 
 interface RuleProp {
 	type: 'required' | 'email' | 'password';
@@ -68,6 +69,10 @@ export default defineComponent({
             ruleState.error = !allPassed
             return allPassed
 		}
+
+		onMounted(()=> {
+			emitter.emit('item-created', onValidate)
+		})
 
         // v-model
         const updateValue = (e: KeyboardEvent) => {
