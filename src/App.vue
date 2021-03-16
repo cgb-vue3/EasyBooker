@@ -2,31 +2,32 @@
 	<div class="bg-white border-bottom">
 		<div class="container w-75">
 			<GlobalHeader msg="Welcome to Your Vue.js + TypeScript App" />
+			
 		</div>
 	</div>
 
-	<div class="container bg-white w-75 mt-3 shadow-lg">
-		<drop-down title="Duing">
-			<drop-down-item> 编辑 </drop-down-item>
-			<drop-down-item> 我的专栏 </drop-down-item>
-			<drop-down-item> 退出 </drop-down-item>
-		</drop-down>
+	<div class="container bg-white w-75 mt-3 shadow-lg p-3">
+		<column-list :ColumnList="Columns"></column-list>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GlobalHeader from './components/GlobalHeader.vue'
-import DropDown from './components/DropDown.vue'
-import DropDownItem from './components/DropDownItem.vue'
+import ColumnList from './components/ColumnList.vue'
+import {Columns} from './hooks/testData'
 
 export default defineComponent({
 	name: 'App',
 	components: {
 		GlobalHeader,
-		DropDown,
-		DropDownItem,
+		ColumnList
 	},
+	setup() {
+		return {
+			Columns
+		}
+	}
 })
 </script>
 
