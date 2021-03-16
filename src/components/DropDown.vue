@@ -6,12 +6,12 @@
 			id="dropdownMenuButton"
 			data-bs-toggle="dropdown"
 			aria-expanded="false"
-            @click="isShow = !isShow"
+            @click="isShowRef = !isShowRef"
 		>
 			{{ DropDownTitle }}
 		</button>
 		<ul
-            v-if="isShow"
+            v-if="isShowRef"
 			class="dropdown-menu py-0"
 			aria-labelledby="dropdownMenuButton"
 			:style="{ display: 'block' }"
@@ -21,7 +21,7 @@
 	</div>
 </template>
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
 
 export default defineComponent({
 	props: {
@@ -32,10 +32,24 @@ export default defineComponent({
 	},
 	setup(props) {
 		const DropDownTitle = ref(props.title)
-		const isShow = ref(false)
+		const isShowRef = ref(false)
+
+		const handleClick = (e) => {
+			if (e.target.className.indexOf('dropdown-toggle') < 0) {
+				isShowRef.value = false
+			}
+		}
+		onMounted(() => {
+			document.addEventListener('click', handleClick)
+
+		})
+
+		onUnmounted(() => {
+			document.removeEventListener('click', handleClick)
+		})
 		return {
 			DropDownTitle,
-			isShow,
+			isShowRef,
 		}
 	},
 })
