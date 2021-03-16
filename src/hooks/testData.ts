@@ -6,7 +6,6 @@ export const Columns = [{
     "featured": true,
     "avatar": {
         "_id": "5f3e41a8b7d9c60b68cdd1ec",
-        "url": "http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f3e41a8b7d9c60b68cdd1ec.jpg",
         "filename": "7.jpg",
         "extname": ".jpg",
         "__v": 0,

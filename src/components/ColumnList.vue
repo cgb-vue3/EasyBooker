@@ -26,7 +26,7 @@ import { defineComponent, PropType, ref } from 'vue'
 
 type Avatar = {
 	_id: string;
-	url: string;
+	url?: string;
 	filename: string;
 	extname: string;
 	__v: number;
@@ -52,7 +52,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const Columns = ref(props.ColumnList)
+        props.ColumnList.forEach(ele => {
+            if ( !ele.avatar.url) {
+                ele.avatar.url = require('../assets/avatar.jpg')
+            }
+        }) 
+        const Columns = ref(props.ColumnList)
 
 		return {
 			Columns,
