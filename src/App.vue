@@ -8,17 +8,20 @@
 	<div class="container bg-white w-75 mt-3 shadow-lg p-3">
 		<column-list :ColumnList="Columns"></column-list>
 
+		<validate-input title="邮箱" :rules="EmailRules" v-model="inputValue">
+		</validate-input>
 
-		<validate-input title="邮箱" :rules="EmailRules"></validate-input>
+		{{ inputValue }}
 		<validate-input title="密码" :rules="PasswordRules"></validate-input>
+
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import ColumnList from './components/ColumnList.vue'
-import ValidateInput, { RuleProp } from './components/ValidateInput.vue'
+import ValidateInput, { RulesProp } from './components/ValidateInput.vue'
 import { Columns } from './hooks/testData'
 
 const User: UserProps = {
@@ -27,7 +30,7 @@ const User: UserProps = {
 	id: 101,
 }
 
-const EmailRules: RuleProp[] = [
+const EmailRules: RulesProp = [
 	{
 		type: 'required',
 		message: '邮箱不能为空！',
@@ -37,7 +40,7 @@ const EmailRules: RuleProp[] = [
 		message: '请输入正确的邮箱！'
 	}
 ]
-const PasswordRules: RuleProp[] = [
+const PasswordRules: RulesProp = [
 	{
 		type: 'required',
 		message: '密码不能为空！',
@@ -56,11 +59,14 @@ export default defineComponent({
 		ValidateInput,
 	},
 	setup() {
+		const inputValue = ref('test...')
+
 		return {
 			Columns,
 			User,
 			EmailRules,
-			PasswordRules
+			PasswordRules,
+			inputValue,
 		}
 	},
 })
