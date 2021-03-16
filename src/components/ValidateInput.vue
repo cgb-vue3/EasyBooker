@@ -8,7 +8,8 @@
 			aria-describedby="validationServer03Feedback"
 			required
 			@blur="onValidate"
-            v-model="inputRef"
+            @input="updateValue"
+            :value="inputRef"
 		/>
 		<div class="invalid-feedback" v-if="ruleState.error">
 			{{ ruleState.message }}
@@ -18,10 +19,12 @@
 <script lang="ts">
 import { defineComponent, ref, PropType, reactive } from 'vue'
 
-export interface RuleProp {
+interface RuleProp {
 	type: 'required' | 'email' | 'password';
     message: string;
 }
+
+export type RulesProp = RuleProp[]
 
 export default defineComponent({
 	props: {
@@ -33,16 +36,17 @@ export default defineComponent({
 			type: Array as PropType<RuleProp[]>,
 			required: true,
         },
+        modelValue: String
 	},
-	setup(props) {
+	setup(props, ctx) {
         const mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+        const inputRef = ref(props.modelValue)
 
+        // Validate
 		const ruleState = reactive({
 			error: false,
 			message: '',
 		})
-
-        const inputRef = ref('')
 		let allPassed = false
 		const onValidate = () => {
 			allPassed = props.rules.every((rule) => {
@@ -63,10 +67,16 @@ export default defineComponent({
             return allPassed
 		}
 
+        // v-model
+        const updateValue = (e: KeyboardEvent) => {
+            inputRef.value = (e.target as HTMLInputElement).value
+            ctx.emit('update:modelValue', inputRef.value)
+        }
 		return {
             inputRef,
 			onValidate,
             ruleState,
+            updateValue
 		}
 	},
 })
