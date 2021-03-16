@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="mb-3">
 		<span class="form-label">{{ title }}</span>
 		<input
 			type="text"
@@ -10,6 +10,7 @@
 			@blur="onValidate"
             @input="updateValue"
             :value="inputRef"
+            v-bind="$attrs"
 		/>
 		<div class="invalid-feedback" v-if="ruleState.error">
 			{{ ruleState.message }}
@@ -37,10 +38,11 @@ export default defineComponent({
 			required: true,
         },
         modelValue: String
-	},
+    },
+    inheritAttrs: false,
 	setup(props, ctx) {
         const mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        const inputRef = ref(props.modelValue)
+        const inputRef = ref(props.modelValue || '')
 
         // Validate
 		const ruleState = reactive({
