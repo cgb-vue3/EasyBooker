@@ -7,6 +7,7 @@
 			data-bs-toggle="dropdown"
 			aria-expanded="false"
             @click="isShowRef = !isShowRef"
+			ref="dropdownRef"
 		>
 			{{ DropDownTitle }}
 		</button>
@@ -33,11 +34,16 @@ export default defineComponent({
 	setup(props) {
 		const DropDownTitle = ref(props.title)
 		const isShowRef = ref(false)
+		const dropdownRef = ref(null)
 
 		const handleClick = (e) => {
-			if (e.target.className.indexOf('dropdown-toggle') < 0) {
+			if(!dropdownRef.value.contains(e.target) && isShowRef.value) {
 				isShowRef.value = false
 			}
+
+			// if (e.target.className.indexOf('dropdown-toggle') < 0) {
+			// 	isShowRef.value = false
+			// }
 		}
 		onMounted(() => {
 			document.addEventListener('click', handleClick)
@@ -50,6 +56,7 @@ export default defineComponent({
 		return {
 			DropDownTitle,
 			isShowRef,
+			dropdownRef
 		}
 	},
 })
