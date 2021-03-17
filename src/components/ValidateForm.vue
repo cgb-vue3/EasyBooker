@@ -13,7 +13,7 @@
 	</form>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, PropType, onUnmounted } from 'vue'
+import { defineComponent, onUnmounted } from 'vue'
 import mitt from 'mitt'
 
 export const emitter = mitt()
