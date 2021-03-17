@@ -11,9 +11,10 @@ export interface GlobalDataProps {
 const store = createStore<GlobalDataProps>({
     state: {
         user: {
-            isLogin: false,
+            isLogin: true,
             name: 'DUING',
             id: 101,
+            columnId: '5f3e86d62c56ee13bb830961c'
         },
         columns: Columns,
         posts: Posts
@@ -24,6 +25,9 @@ const store = createStore<GlobalDataProps>({
         },
         logOut(state) {
             state.user.isLogin = false
+        },
+        createPost(state, payload) {
+            state.posts.push(payload)
         }
     }
 })

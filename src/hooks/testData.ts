@@ -181,6 +181,7 @@ export const Posts = [
     isLogin: boolean;
     name: string;
     id?: number;
+    columnId?: string;
   }
 
 
