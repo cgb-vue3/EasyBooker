@@ -1,7 +1,7 @@
 <template>
 	<div class="bg-white border-bottom">
 		<div class="container w-75">
-			<GlobalHeader :user="User" />
+			<GlobalHeader :user="user" />
 		</div>
 	</div>
 
@@ -11,15 +11,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
-
-const User: UserProps = {
-	isLogin: false,
-	name: 'DUING',
-	id: 101,
-}
-
+import { defineComponent, computed } from 'vue'
+import GlobalHeader from './components/GlobalHeader.vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
 	name: 'App',
@@ -27,8 +21,9 @@ export default defineComponent({
 		GlobalHeader,
 	},
 	setup() {
+		const user = computed(() => useStore().state.user)
 		return {
-			User,
+			user,
 		}
 	},
 })
