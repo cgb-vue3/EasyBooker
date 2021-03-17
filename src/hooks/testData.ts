@@ -176,3 +176,47 @@ export const Posts = [
       "key": 5
     }
   ]
+
+  export interface UserProps {
+    isLogin: boolean;
+    name: string;
+    id?: number;
+  }
+
+
+  type Avatar = {
+    _id: string;
+    url?: string;
+    filename: string;
+    extname: string;
+    __v: number;
+    createdAt: string;
+  }
+  
+  export interface ColumnProps {
+    _id: string;
+    title: string;
+    description: string;
+    author: string;
+    featured: boolean;
+    avatar: Avatar;
+    __v?: number;
+    createdAt?: string;
+  }
+
+
+  type PostAvatar = {
+    _id: string;
+    url?: string;
+  }
+  
+  export interface PostProps {
+    _id: string;
+    title: string;
+    column: string;
+    author: string;
+    excerpt: string;
+    image: PostAvatar;
+    key?: number;
+    createdAt?: string;
+  }
