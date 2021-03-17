@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import Register from './views/Register.vue'
 import CoumnDetail from './views/ColumnDetail.vue'
 import CreatePost from "./views/CreatePost.vue";
+import store from './store'
 
 const routerHistory = createWebHistory()
 const router = createRouter({
@@ -17,12 +18,18 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component: Login
+            component: Login,
+            meta: {
+                RedictAlreadyLogin: true
+            }
         },
         {
             path: '/register',
             name: 'register',
-            component: Register
+            component: Register,
+            meta: {
+                RedictAlreadyLogin: true
+            }
         },
         {
             path: '/columns/:id',
@@ -32,9 +39,21 @@ const router = createRouter({
         {
             path: '/create',
             name: 'create',
-            component: CreatePost
+            component: CreatePost,
+            meta: {
+                RequireLogin: true
+            }
         },
     ]
 })
 
+router.beforeEach((to, from , next) => {
+    if (to.meta.RequireLogin && !store.state.user.isLogin) {
+        next('/login')
+    } else if(to.meta.RedictAlreadyLogin && store.state.user.isLogin) {
+        next('/')
+    } else {
+        next()
+    }
+})
 export default router
