@@ -9,12 +9,23 @@
 		</validate-input>
 
 		<validate-input
-			title="密码"
+			title="请输入密码"
 			:rules="PasswordRules"
+			v-model="passwordValue"
 			type="password"
 			placeholder="请输入密码。。。"
 		></validate-input>
-        
+		<validate-input
+			title="请再次输入密码"
+			:rules="PasswordRules"
+			v-model="passwordValue"
+			type="password"
+			placeholder="请输入密码。。。"
+		></validate-input>
+
+        <template v-slot:submit>
+            注册
+        </template>
 	</validate-form>
 </template>
 
@@ -22,7 +33,6 @@
 import { defineComponent, ref } from 'vue'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
-
 
 const EmailRules: RulesProp = [
 	{
@@ -53,6 +63,7 @@ export default defineComponent({
 	},
 	setup() {
 		const inputValue = ref('')
+		const passwordValue = ref('')
 		const onFormSubmit = (result: boolean) => {
 			console.log('submit:', result)
 		}
@@ -60,7 +71,8 @@ export default defineComponent({
 			EmailRules,
 			PasswordRules,
 			inputValue,
-			onFormSubmit
+			onFormSubmit,
+			passwordValue,
 		}
 	},
 })

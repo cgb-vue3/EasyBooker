@@ -12,7 +12,12 @@
 					<div class="card-text">
 						{{ column.description }}
 					</div>
-					<a href="#" class="btn btn-primary"> 进入专栏</a>
+					<router-link
+						class="btn btn-primary"
+						:to="{ name: 'columns', params: { id: column._id } }"
+					>
+						进入专栏
+					</router-link>
 				</div>
 			</div>
 		</div>

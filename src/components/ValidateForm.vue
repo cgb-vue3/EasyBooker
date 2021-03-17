@@ -1,14 +1,14 @@
 <template>
 	<form class="validate-form">
 		<slot name="default"></slot>
-		<div
-			class="submit-area d-flex justify-content-center"
-		>
-			<slot name="submit">
-				<button type="submit" class="btn btn-primary px-4 shadow-none" @click.prevent="submitForm">
-					确定
-				</button>
-			</slot>
+		<div class="submit-area d-flex justify-content-center">
+			<button
+				type="submit"
+				class="btn btn-primary px-4 shadow-none"
+				@click.prevent="submitForm"
+			>
+				<slot name="submit"> 确定 </slot>
+			</button>
 		</div>
 	</form>
 </template>
@@ -24,12 +24,15 @@ export default defineComponent({
 	setup(props, context) {
 		let funcArr: validateFunc[] = []
 
-		emitter.on('item-created', (func) => {
+		const callback = (func: validateFunc) => {
 			funcArr.push(func)
-		})
+		}
+
+		emitter.on('item-created', callback as validateFunc)
+
 		onUnmounted(() => {
 			// 删除监听
-			emitter.all.clear()
+			emitter.off('item-created', callback as validateFunc)
 			funcArr = []
 		})
 		const submitForm = () => {

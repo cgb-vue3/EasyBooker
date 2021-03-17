@@ -15,7 +15,7 @@ import { defineComponent } from 'vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 
 const User: UserProps = {
-	isLogin: true,
+	isLogin: false,
 	name: 'DUING',
 	id: 101,
 }
