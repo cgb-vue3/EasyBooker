@@ -1,37 +1,45 @@
 <template>
 	<div class="container w-75 column-detail">
 		<div class="d-flex p-3 mb-4 border-bottom">
-			<img :src="column.avatar.url" :alt="column.title" class="rounded-circle column-avatar" />
+			<img :src="columns.avatar.url" :alt="columns.title" class="rounded-circle column-avatar" />
 			<div class="card-content">
-				<h5 class="card-title">{{ column.title }}</h5>
+				<h5 class="card-title">{{ columns.title }}</h5>
 				<p class="card-text">
-					{{ column.description + '...' }}
+					{{ columns.description + '...' }}
 				</p>
 			</div>
 		</div>
 
-		<post-list :Posts="Posts"></post-list>
+		<post-list :Posts="posts"></post-list>
 	</div>
 </template>
 <script>
-import { defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import PostList from '../components/PostList.vue'
-import {Columns, Posts} from '../hooks/testData'
-
+import {useStore} from 'vuex'
 
 export default defineComponent({
 	components: {
         PostList,
     },
 	setup() {
-        const route = useRoute()
-        const column = Columns.filter(column => column._id == route.params.id)[0]
+		const route = useRoute()
+		const router = useStore()
+		const store = useStore()
+
+        const columns = computed(() => {
+			return store.state.columns.filter(column => column._id == route.params.id)[0]
+		})
+ 
+		const posts = computed(() => {
+			return store.state.posts
+		})
 
 		return {
             route,
-            column,
-            Posts
+            columns,
+            posts
 		}
 	},
 })

@@ -2,11 +2,23 @@
 	<div class="mb-2 validate-input">
 		<span class="form-label p-2">{{ title }}</span>
 		<input
+			v-if = "tag === 'input'"
 			type="text"
 			class="form-control shadow-none"
 			:class="{ 'is-invalid': ruleState.error }"
 			aria-describedby="validationServer03Feedback"
 			required
+			@blur="onValidate"
+			@input="updateValue"
+			:value="inputRef"
+			v-bind="$attrs"
+		/>
+		<textarea v-else
+			class="form-control shadow-none"
+			:class="{ 'is-invalid': ruleState.error }"
+			aria-describedby="validationServer03Feedback"
+			required
+			rows="5"
 			@blur="onValidate"
 			@input="updateValue"
 			:value="inputRef"
@@ -28,6 +40,8 @@ interface RuleProp {
 
 export type RulesProp = RuleProp[]
 
+type TagProp = 'input' | 'textarea';
+
 export default defineComponent({
 	props: {
 		title: {
@@ -39,6 +53,10 @@ export default defineComponent({
 			required: true,
 		},
 		modelValue: String,
+		tag: {
+			type: String,
+			default: 'input'
+		}
 	},
 	inheritAttrs: false,
 	setup(props, ctx) {
