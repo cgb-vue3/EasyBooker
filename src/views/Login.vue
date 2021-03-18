@@ -69,9 +69,9 @@ export default defineComponent({
 			}
 
 			if (result) {
-				store.dispatch('logIn', user)
-				store.commit('setLoading', true)
-				router.push('/')
+				store.dispatch('logIn', user).then(res => {	
+					(res === 'success') && router.push('/')
+				})
 			}
 		}
 		return {
