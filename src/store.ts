@@ -3,8 +3,16 @@ import axios from 'axios'
 
 import { UserProps, ColumnProps, PostProps } from "./hooks/typeProps";
 
+export interface MessageProps {
+    type: 'success' | 'error' | 'tips';
+    message: string;
+    status: boolean;
+}
+
+
 export interface GlobalDataProps {
-    token: string;
+    error: MessageProps;
+    token: string | null;
     loading: boolean;
     user: UserProps;
     column? : ColumnProps | {};
@@ -14,7 +22,12 @@ export interface GlobalDataProps {
 
 const store = createStore<GlobalDataProps>({
     state: {
-        token: '',
+        error: {
+            status: false,
+            message: '提示信息',
+            type: 'error'
+        },
+        token: localStorage.getItem('token'),
         loading: false,
         user: {
             isLogin: false,
@@ -34,13 +47,17 @@ const store = createStore<GlobalDataProps>({
                 columnId: user.column,
             }
         },
+        removeUser(state) {
+            state.user.isLogin = false
+            localStorage.removeItem('token')
+        },
         logIn(state, token) {
             state.token = token
-            
+            localStorage.setItem("token", token)
         },
         logOut(state) {
-
             state.user.isLogin = false
+             localStorage.removeItem('token')
         },
         createPost(state, payload) {
             state.posts.push(payload)
@@ -56,6 +73,9 @@ const store = createStore<GlobalDataProps>({
         },
         setLoading(state, status) {
             state.loading = status
+        },
+        setMessage(state, message) {
+            state.error = message
         }
     },
     actions: {
@@ -80,23 +100,38 @@ const store = createStore<GlobalDataProps>({
         async logIn(ctx, user) {
             // 获取token
             const result: any = await axios.post('/user/login', user)
-            const token = result.data.token
-            if(result.code === '404') {
-                console.log(result.error)
+            if(result.msg !== '请求成功') {
+                ctx.commit('setMessage', {
+                    status: true,
+                    message: result.error,
+                    type: 'error'
+                })
+
+                return Promise.resolve('error')
             } else {
+                const token = result.data.token
                 ctx.commit('logIn', token)
+                ctx.commit('setMessage', {
+                    status: true,
+                    message: result.msg,
+                    type: 'success'
+                })
+                ctx.dispatch('getUser', token)
+                return Promise.resolve('success')
             }
-            ctx.dispatch('getUser', token)
+
+            
         },
         async getUser(ctx, token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-            const userMessage = await axios.get('/user/current')
-
-            if(userMessage.status !== 401) {
+            const userMessage: any = await axios.get('/user/current')
+            if(userMessage.msg === "请求成功") {
                 ctx.commit('setUser', userMessage.data)
+            } else {
+                console.log('token 错误或过期！')
+                ctx.commit('removeUser')
             }
         }
-
     },
 })
 
