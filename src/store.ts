@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 import axios from 'axios'
-
+import createMessage from "./hooks/GlobalMessage";
 import { UserProps, ColumnProps, PostProps } from "./hooks/typeProps";
 
 export interface MessageProps {
@@ -101,26 +101,21 @@ const store = createStore<GlobalDataProps>({
             // 获取token
             const result: any = await axios.post('/user/login', user)
             if(result.msg !== '请求成功') {
-                ctx.commit('setMessage', {
-                    status: true,
-                    message: result.error,
-                    type: 'error'
-                })
-
+                createMessage(result.error, 'error', 1000)
                 return Promise.resolve('error')
             } else {
                 const token = result.data.token
                 ctx.commit('logIn', token)
-                ctx.commit('setMessage', {
-                    status: true,
-                    message: result.msg,
-                    type: 'success'
+                
+                createMessage('登录成功，1s后跳转首页。。。', 'success', 1000)
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        ctx.dispatch('getUser', token)
+                        resolve('success')
+                    }, 1000);
+                    
                 })
-                ctx.dispatch('getUser', token)
-                return Promise.resolve('success')
             }
-
-            
         },
         async getUser(ctx, token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
