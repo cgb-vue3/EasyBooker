@@ -1,21 +1,10 @@
 import { createStore } from "vuex";
 import axios from 'axios'
 
-import { UserProps, ColumnProps, PostProps } from "./hooks/testData";
-
-axios.defaults.baseURL = 'http://127.0.0.1:3000/api/'
-
-
-axios.interceptors.response.use(response => {
-    if (response.status === 200) {
-        return response.data.data
-    }
-    // 对响应数据做点什么
-    return response;
-  })
-
+import { UserProps, ColumnProps, PostProps } from "./hooks/typeProps";
 
 export interface GlobalDataProps {
+    loading: boolean;
     user: UserProps;
     column? : ColumnProps | {};
     columns: ColumnProps[];
@@ -24,6 +13,7 @@ export interface GlobalDataProps {
 
 const store = createStore<GlobalDataProps>({
     state: {
+        loading: false,
         user: {
             isLogin: true,
             name: 'DUING',
@@ -52,6 +42,9 @@ const store = createStore<GlobalDataProps>({
         },
         getColumn(state, payload) {
             state.column = payload
+        },
+        setLoading(state, status) {
+            state.loading = status
         }
     },
     actions: {
