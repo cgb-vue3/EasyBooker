@@ -9,7 +9,7 @@
 		<div class="container bg-white w-75 mt-3 shadow-lg p-3 main" v-show="!isLoading">
 			<router-view></router-view>
 		</div>
-		<loading v-if="isLoading"></loading>
+		<loading v-if="isLoading" :style="{color: '#0d6efd'}"  ></loading>
 	</div>
 </template>
 

@@ -61,10 +61,16 @@ export default defineComponent({
 		const passwordValue = ref('')
 		const router = useRouter()
 		const store = useStore()
+
 		const onFormSubmit = (result: boolean) => {
-			console.log('submit:', result)
+			const user = {
+				email: inputValue.value,
+				password: passwordValue.value
+			}
+
 			if (result) {
-				store.commit('logIn')
+				store.dispatch('logIn', user)
+				store.commit('setLoading', true)
 				router.push('/')
 			}
 		}

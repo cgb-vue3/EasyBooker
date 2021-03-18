@@ -11,7 +11,7 @@
 				</router-link>
 			</h4>
 			<div class="card-content">
-				<img :src="post.image.url" class="card-img" alt="..." />
+				<img :src="post.image && post.image.url" class="card-img" alt="..." />
 				<p>{{ post.excerpt }}</p>
 			</div>
 			<p class="card-text">{{ post.createdAt }}</p>
