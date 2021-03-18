@@ -21,7 +21,7 @@
 					</button>
 				</router-link>
 			</form>
-			<drop-down :title="User.name" v-else>
+			<drop-down :title="User.nickName" v-else>
 				<drop-down-item @click="createPost"> 新建文章 </drop-down-item>
 				<drop-down-item @click="myColumn"> 我的专栏 </drop-down-item>
 				<drop-down-item @click="handleQuit"> 退出 </drop-down-item>
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import DropDown from './DropDown.vue'
 import DropDownItem from './DropDownItem.vue'
 import {useStore} from 'vuex'
@@ -39,7 +39,7 @@ import {useRouter} from 'vue-router'
 
 export interface UserProps {
 	isLogin: boolean;
-	name: string;
+	nickName: string;
 	id?: number;
 }
 export default defineComponent({
@@ -55,7 +55,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const User = ref(props.user)
+		const User = computed(() => props.user)
 		const store = useStore()
 		const router = useRouter()
 		const createPost = () => {

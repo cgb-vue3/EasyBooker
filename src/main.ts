@@ -7,21 +7,27 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:3000/api/'
 
 axios.interceptors.request.use(config => {
-    store.commit('setLoading', true)
+    if(store.state.posts.length == 0  || store.state.columns.length == 0) {
+        store.commit('setLoading', true)
+    } 
     
     // 对响应数据做点什么
     return config;
   })
 
 
-axios.interceptors.response.use(response => {
-
-    setTimeout(() => {
-        store.commit('setLoading', false)
-    }, 300)
-
+axios.interceptors.response.use( async response => {
+    const delay = new Promise((resolve) => [
+        setTimeout(() => {
+            resolve(true)
+            store.commit('setLoading', false)
+        }, 500)
+    ])
+    await delay
+    store.commit('setLoading', false)
+    
     if (response.status === 200) {
-        return response.data.data
+        return response.data
     }
     // 对响应数据做点什么
     return response;
