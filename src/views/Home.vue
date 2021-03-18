@@ -3,9 +3,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted,computed } from 'vue'
+import {useStore} from 'vuex'
 import ColumnList from '../components/ColumnList.vue'
-import { Columns } from '../hooks/testData'
+
 
 export default defineComponent({
 	name: 'Home',
@@ -13,6 +14,16 @@ export default defineComponent({
 		ColumnList,
 	},
 	setup() {
+		const store = useStore()
+
+		onMounted(() => {
+			store.dispatch('getColumns')
+		})
+		
+		const Columns = computed(() => {
+			return store.state.columns
+		})
+
 		return {
 			Columns,
 		}

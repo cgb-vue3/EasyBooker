@@ -24,7 +24,7 @@
 	</div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 type Avatar = {
 	_id: string;
 	url?: string;
@@ -57,7 +57,7 @@ export default defineComponent({
 				ele.avatar.url = require('../assets/avatar.jpg')
 			}
 		})
-		const Columns = ref(props.ColumnList)
+		const Columns = computed(() => props.ColumnList)
 
 		return {
 			Columns,
