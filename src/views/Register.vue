@@ -1,38 +1,55 @@
 <template>
-	<validate-form @form-submit="onFormSubmit">
-		<validate-input
-			title="邮箱"
-			:rules="EmailRules"
-			v-model="inputValue"
-			placeholder="请输入邮箱。。。"
-		>
-		</validate-input>
+	<div class="register">
+		<validate-form @form-submit="onFormSubmit" class="validate-form">
+			<h1 class="py-4 text-center">注册U-L账户</h1>
+			<validate-input
+				title="邮箱地址"
+				:rules="EmailRules"
+				v-model="formData.email"
+				placeholder="请输入邮箱"
+			>
+			</validate-input>
 
-		<validate-input
-			title="请输入密码"
-			:rules="PasswordRules"
-			v-model="passwordValue"
-			type="password"
-			placeholder="请输入密码。。。"
-		></validate-input>
-		<validate-input
-			title="请再次输入密码"
-			:rules="PasswordRules"
-			v-model="passwordValue"
-			type="password"
-			placeholder="请输入密码。。。"
-		></validate-input>
+			<validate-input
+				title="昵称"
+				:rules="NickNameRules"
+				v-model="formData.nickName"
+				placeholder="请输入昵称"
+			>
+			</validate-input>
 
-        <template v-slot:submit>
-            注册
-        </template>
-	</validate-form>
+			<validate-input
+				title="密码"
+				:rules="PasswordRules"
+				v-model="formData.password"
+				type="password"
+				placeholder="请输入密码"
+			></validate-input>
+
+			<validate-input
+				title="重复密码"
+				:rules="customRules"
+				v-model="formData.rePassword"
+				type="password"
+				placeholder="请再次输入密码"
+			></validate-input>
+			<div class="mb-4">
+				<router-link to="/login" class="link-primary fs-6"
+					>已经有账户了？去登录</router-link
+				>
+			</div>
+			<template v-slot:submit> 注册 </template>
+		</validate-form>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
+import axios from 'axios'
+import createMessage from '../hooks/GlobalMessage'
+import { useRouter } from 'vue-router'
 
 const EmailRules: RulesProp = [
 	{
@@ -51,7 +68,14 @@ const PasswordRules: RulesProp = [
 	},
 	{
 		type: 'password',
-		message: '请输入正确的密码！',
+		message: '密码的长度不能少于6位！',
+	},
+]
+
+const NickNameRules: RulesProp = [
+	{
+		type: 'required',
+		message: '昵称不能为空！',
 	},
 ]
 
@@ -62,18 +86,78 @@ export default defineComponent({
 		ValidateForm,
 	},
 	setup() {
-		const inputValue = ref('')
-		const passwordValue = ref('')
+		const router = useRouter()
+		const formData = reactive({
+			email: '',
+			nickName: '',
+			password: '',
+			rePassword: '',
+		})
+
 		const onFormSubmit = (result: boolean) => {
-			console.log('submit:', result)
+			if (result) {
+				console.log(formData)
+				axios({
+					method: 'post',
+					baseURL: 'http://127.0.0.1:3000/api/',
+					url: '/users',
+					data: {
+						email: formData.email,
+						nickName: formData.nickName,
+						password: formData.password,
+					},
+				}).then((res: any) => {
+					console.log(res)
+					if (res.code == 400) {
+						createMessage(res.error, 'error', 1000)
+					}
+
+					if (res.code == 500) {
+						createMessage(
+							'注册成功，1s后跳转登录页面。。。',
+							'success',
+							1000
+						)
+						setTimeout(() => {
+							router.push('/login')
+						}, 1000)
+					}
+				})
+			}
 		}
+
+		const customRules: RulesProp = [
+			{
+				type: 'required',
+				message: '请重复输入的密码！',
+			},
+			{
+				type: 'custom',
+				message: '请重复输入的密码！',
+				validate: () => {
+					return formData.password == formData.rePassword
+				},
+			},
+		]
+
 		return {
+			NickNameRules,
 			EmailRules,
 			PasswordRules,
-			inputValue,
+			customRules,
 			onFormSubmit,
-			passwordValue,
+			formData,
 		}
 	},
 })
 </script>
+<style lang="scss" scoped>
+.register {
+	display: flex;
+	justify-content: center;
+
+	.validate-form {
+		width: 400px;
+	}
+}
+</style>

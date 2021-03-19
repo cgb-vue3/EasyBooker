@@ -17,7 +17,6 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import GlobalHeader from './components/GlobalHeader.vue'
 import Loading from './components/Loading.vue'
-import Message from "./components/Message.vue";
 
 import { useStore } from 'vuex'
 
@@ -26,7 +25,6 @@ export default defineComponent({
 	components: {
 		GlobalHeader,
 		Loading,
-		
 	},
 	setup() {
 		const store = useStore()
@@ -50,12 +48,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#app {
+body {
 	background-color: #f4f5f5;
-	padding-bottom: 100px;
+}
 
-	.main {
-		min-height: 100vh;
-	}
+#app {
+	height: 100%;
+	padding-bottom: 100px;
+	
 }
 </style>
