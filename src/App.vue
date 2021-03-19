@@ -1,6 +1,5 @@
 <template>
 	<div id="App">
-		<message  :message="isError"></message>
 		<div class="bg-white border-bottom">
 			<div class="container w-75">
 				<GlobalHeader :user="user" />
@@ -27,7 +26,7 @@ export default defineComponent({
 	components: {
 		GlobalHeader,
 		Loading,
-		Message
+		
 	},
 	setup() {
 		const store = useStore()
