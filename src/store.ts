@@ -112,6 +112,7 @@ const store = createStore<GlobalDataProps>({
             const userMessage: any = await axios.get('/user/current')
             if(userMessage.msg === "请求成功") {
                 ctx.commit('setUser', userMessage.data)
+                console.log('user', store.state.user, userMessage.data)
             } else {
                 console.log('token 错误或过期！')
                 ctx.commit('removeUser')

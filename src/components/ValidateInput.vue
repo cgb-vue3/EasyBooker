@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-2 validate-input">
+	<div class="mb-4 validate-input">
 		<span class="form-label p-2">{{ title }}</span>
 		<input
 			v-if = "tag === 'input'"
@@ -34,8 +34,9 @@ import { defineComponent, ref, PropType, reactive, onMounted } from 'vue'
 import { emitter } from './ValidateForm.vue'
 
 interface RuleProp {
-	type: 'required' | 'email' | 'password';
+	type: 'required' | 'email' | 'password' | 'custom';
 	message: string;
+	validate? : () => any;
 }
 
 export type RulesProp = RuleProp[]
@@ -68,21 +69,29 @@ export default defineComponent({
 			error: false,
 			message: '',
 		})
+
+
 		let allPassed = false
 		const onValidate = () => {
-			allPassed = props.rules.every((rule) => {
-				if (rule.type === 'required' || rule.type === 'password') {
-					if (!(inputRef.value.trim() == '')) {
-						return true
-					}
-				} else if (rule.type === 'email') {
-					if (mailReg.test(inputRef.value)) {
-						return true
-					}
+			props.rules.every((rule) => {
+				switch(rule.type) {
+					case 'required':
+						allPassed = ! (inputRef.value.trim() == '')
+						break;
+					case 'email':
+						allPassed = mailReg.test(inputRef.value)
+
+						break;
+					case 'password':
+						allPassed = inputRef.value.length >= 6
+						break;
+					case 'custom':
+						allPassed = rule.validate && rule.validate()
+						break;	
 				}
 
 				ruleState.message = rule.message
-				return false
+				return allPassed
 			})
 			ruleState.error = !allPassed
 			return allPassed
@@ -111,6 +120,7 @@ export default defineComponent({
 	.form-label {
 		font-size: 14px;
 		font-weight: 800;
+		color: #333;
 	}
 	.form-control {
 		font-size: 14px;
