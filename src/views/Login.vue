@@ -28,6 +28,7 @@ import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 import { useStore } from 'vuex'
 import { useRouter} from 'vue-router'
+import createMessage from "../hooks/GlobalMessage";
 
 const EmailRules: RulesProp = [
 	{
@@ -67,13 +68,21 @@ export default defineComponent({
 				email: inputValue.value,
 				password: passwordValue.value
 			}
-
-			if (result) {
+			
+			if(result) {
 				store.dispatch('logIn', user).then(res => {	
-					(res === 'success') && router.push('/')
+					createMessage('登录成功，2s后跳转首页。。。', 'success', 2000)
+					setTimeout(() => {
+						store.dispatch('getUser', store.state.token)
+						router.push('/')
+					}, 2000)
+				}, e => {
+					createMessage(store.state.error.message, 'error', 1000)
 				})
 			}
 		}
+
+
 		return {
 			EmailRules,
 			PasswordRules,

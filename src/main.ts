@@ -7,9 +7,9 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:3000/api/'
 
 axios.interceptors.request.use(config => {
-    // if(store.state.posts.length == 0  || store.state.columns.length == 0) {
-    //     store.commit('setLoading', true)
-    // } 
+    if(store.state.posts.length == 0  || store.state.columns.length == 0 || store.state.user.isLogin == false) {
+        store.commit('setLoading', true)
+    } 
     
     // 对响应数据做点什么
     return config;
@@ -17,14 +17,23 @@ axios.interceptors.request.use(config => {
 
 
 axios.interceptors.response.use( async response => {
-    // const delay = new Promise((resolve) => [
-    //     setTimeout(() => {
-    //         resolve(true)
-    //         store.commit('setLoading', false)
-    //     }, 500)
-    // ])
-    // await delay
-    // store.commit('setLoading', false)
+    const delay = new Promise((resolve) => [
+        setTimeout(() => {
+            resolve(true)
+            store.commit('setLoading', false)
+        }, 500)
+    ])
+    await delay
+    store.commit('setLoading', false)
+
+    const message = {
+      status: true,
+      type: response.data.error ? 'error' : 'success',
+      message: response.data.msg || response.data.error
+    }
+   
+    store.commit('setMessage', message)
+
     if (response.status === 200) {
         return response.data
     }
