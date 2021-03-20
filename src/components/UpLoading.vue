@@ -6,6 +6,7 @@
 				class="btn btn-outline-primary shadow-none"
 				@click="handleClick"
 			>
+
 				点击上传
 			</button>
 		</div>
@@ -46,8 +47,9 @@ export default defineComponent({
 			type: Function,
 			required: true,
 		},
-	},
-	setup(props) {
+    },
+    emits: ['uploading', 'fileUploaded', 'fileUploaderror'],
+	setup(props, ctx) {
 		const fileInput = ref()
 		const uploadStatus = ref<UploadingStatus>('beforeUpload')
 		const avatar = ref('')
@@ -78,13 +80,18 @@ export default defineComponent({
 							appkey: 'span_1604795537548',
 						},
 						onUploadProgress: function (progressEvent) {
-							uploadStatus.value = 'upLoading'
+                            uploadStatus.value = 'upLoading'
+                            ctx.emit('uploading', progressEvent)
 						},
 					})
 					.then((res) => {
 						uploadStatus.value = 'fileUploaded'
-						avatar.value = res.data.data.url
-					})
+                        avatar.value = res.data.data.url
+                        ctx.emit('fileUploaded', res)
+					}, err => {
+                        console.log('上传失败' + err)
+                        ctx.emit('fileUploaderror', err)
+                    })
 			}
 		}
 
@@ -109,7 +116,7 @@ export default defineComponent({
         &:hover {
             cursor: pointer;
             box-shadow: 0 0 1px 0 #333;
-            
+
         }
 	}
 }
