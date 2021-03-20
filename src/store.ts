@@ -58,9 +58,6 @@ const store = createStore<GlobalDataProps>({
             state.user.isLogin = false
              localStorage.removeItem('token')
         },
-        createPost(state, payload) {
-            state.posts.push(payload)
-        },
         getColumns(state, payload) {
             state.columns = payload.list
         },
@@ -117,7 +114,17 @@ const store = createStore<GlobalDataProps>({
                 console.log('token 错误或过期！')
                 ctx.commit('removeUser')
             }
-        }
+        },
+        async createPost(ctx, posts) {
+            const post: any = await axios.post('/posts', posts)
+            console.log(post)
+            // if(post.msg === "请求成功") {
+            //     ctx.commit('setUser', post.data)
+            //     console.log('user', store.state.user, post.data)
+            // } else {
+            //     console.log('token 错误或过期！')
+            // }
+        },
     },
 })
 

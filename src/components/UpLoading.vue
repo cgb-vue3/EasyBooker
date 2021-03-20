@@ -1,21 +1,29 @@
 <template>
 	<div class="up-loading py-4">
 		<div v-if="uploadStatus == 'beforeUpload'">
-			<button
-				type="button"
-				class="btn btn-outline-primary shadow-none"
-				@click="handleClick"
-			>
-
-				点击上传
-			</button>
+			<slot name="beforeUpload" v-bind:handleClick="handleClick">
+				<button
+					type="button"
+					class="btn btn-outline-primary shadow-none"
+					@click="handleClick"
+				>
+					点击上传
+				</button>
+			</slot>
 		</div>
 		<div v-else-if="uploadStatus == 'upLoading'">
-			<div class="spinner-border text-primary mx-3" role="status"></div>
-			<span>正在上传中...</span>
+			<slot name="upLoading">
+				<div
+					class="spinner-border text-primary mx-3"
+					role="status"
+				></div>
+				<span>正在上传中...</span>
+			</slot>
 		</div>
-		<a v-else-if="uploadStatus == 'fileUploaded'" >
-			<img :src="avatar" alt="" class="avatar"/>
+		<a v-else-if="uploadStatus == 'fileUploaded'" @click="handleClick">
+			<slot name="fileUploaded">
+				<img :src="avatar" alt="" class="avatar" />
+			</slot>
 		</a>
 
 		<input
@@ -47,8 +55,8 @@ export default defineComponent({
 			type: Function,
 			required: true,
 		},
-    },
-    emits: ['uploading', 'fileUploaded', 'fileUploaderror'],
+	},
+	emits: ['uploading', 'fileUploaded', 'fileUploaderror'],
 	setup(props, ctx) {
 		const fileInput = ref()
 		const uploadStatus = ref<UploadingStatus>('beforeUpload')
@@ -64,7 +72,7 @@ export default defineComponent({
 				const fileName = files[0]
 				const fileStatus = props.beforeUpload(fileName)
 				if (!fileStatus) {
-					alert(fileName.name + '是不支持的类型。')
+					console.log(fileName.name + '是不支持的类型。')
 					return
 				}
 
@@ -80,18 +88,21 @@ export default defineComponent({
 							appkey: 'span_1604795537548',
 						},
 						onUploadProgress: function (progressEvent) {
-                            uploadStatus.value = 'upLoading'
-                            ctx.emit('uploading', progressEvent)
+							uploadStatus.value = 'upLoading'
+							ctx.emit('uploading', progressEvent)
 						},
 					})
-					.then((res) => {
-						uploadStatus.value = 'fileUploaded'
-                        avatar.value = res.data.data.url
-                        ctx.emit('fileUploaded', res)
-					}, err => {
-                        console.log('上传失败' + err)
-                        ctx.emit('fileUploaderror', err)
-                    })
+					.then(
+						(res) => {
+							uploadStatus.value = 'fileUploaded'
+							avatar.value = res.data.data.url
+							ctx.emit('fileUploaded', res)
+						},
+						(err) => {
+							console.log('上传失败' + err)
+							ctx.emit('fileUploaderror', err)
+						}
+					)
 			}
 		}
 
@@ -107,17 +118,15 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .up-loading {
-    
 	.avatar {
 		height: 50px;
-        width: 100%;
+		width: 100%;
 		object-fit: cover;
 
-        &:hover {
-            cursor: pointer;
-            box-shadow: 0 0 1px 0 #333;
-
-        }
+		&:hover {
+			cursor: pointer;
+			box-shadow: 0 0 1px 0 #333;
+		}
 	}
 }
 </style>
