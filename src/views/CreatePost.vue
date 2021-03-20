@@ -1,9 +1,11 @@
 <template>
 	<div class="container w-75">
 		<h2>新建文章</h2>
-		<up-loading :beforeUpload="beforeUploadCheck" action="/upload/images"></up-loading>
-
-
+		<up-loading
+			:beforeUpload="beforeUploadCheck"
+			action="/upload/images"
+			v-on="uploadEvent"
+		></up-loading>
 
 		<validate-form @form-submit="onFormSubmit">
 			<validate-input
@@ -30,9 +32,10 @@
 import { computed, defineComponent, ref } from 'vue'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
-import UpLoading from "../components/UpLoading.vue";
+import UpLoading from '../components/UpLoading.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import uploadCheck from '../hooks/useUploadCheck'
 
 const TitleRules: RulesProp = [
 	{
@@ -52,7 +55,7 @@ export default defineComponent({
 	components: {
 		ValidateInput,
 		ValidateForm,
-		UpLoading
+		UpLoading,
 	},
 	setup() {
 		const title = ref('')
@@ -60,18 +63,25 @@ export default defineComponent({
 		const router = useRouter()
 		const store = useStore()
 
-        const columnId = store.state.user.columnId
+		const columnId = store.state.user.columnId
+		// 文件校验
+		const beforeUploadCheck = uploadCheck
 
-		const beforeUploadCheck = (file: File) => {
-			if(!['image/png', 'image/jpg'].includes(file.type)) {
-				return false
-			}
-
-			return true
+		// uploading 事件
+		const uploadEvent = {
+			uploading(data: any) {
+				console.log('uploading', data)
+			},
+			fileUploaded(data: any) {
+				console.log('fileUploaded', data)
+			},
+			fileUploaderror(data: any) {
+				console.log('fileUploaderror', data)
+			},
 		}
 
 		const postData = computed(() => {
-            const author = store.state.user.name
+			const author = store.state.user.name
 
 			return {
 				createdAt: new Date(),
@@ -86,8 +96,8 @@ export default defineComponent({
 				title: title,
 				id: '5f3fade0c9875c2cd848a2cb',
 			}
-        })
-        
+		})
+
 		const onFormSubmit = (result: boolean) => {
 			console.log('submit:', result)
 			if (result) {
@@ -101,7 +111,8 @@ export default defineComponent({
 			title,
 			onFormSubmit,
 			excerpt,
-			beforeUploadCheck
+			beforeUploadCheck,
+			uploadEvent
 		}
 	},
 })
