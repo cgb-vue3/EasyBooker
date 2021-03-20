@@ -1,6 +1,10 @@
 <template>
 	<div class="container w-75">
 		<h2>新建文章</h2>
+		<up-loading :beforeUpload="beforeUploadCheck" action="/upload/images"></up-loading>
+
+
+
 		<validate-form @form-submit="onFormSubmit">
 			<validate-input
 				title="文章标题"
@@ -26,6 +30,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
+import UpLoading from "../components/UpLoading.vue";
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -47,6 +52,7 @@ export default defineComponent({
 	components: {
 		ValidateInput,
 		ValidateForm,
+		UpLoading
 	},
 	setup() {
 		const title = ref('')
@@ -56,6 +62,13 @@ export default defineComponent({
 
         const columnId = store.state.user.columnId
 
+		const beforeUploadCheck = (file: File) => {
+			if(!['image/png', 'image/jpg'].includes(file.type)) {
+				return false
+			}
+
+			return true
+		}
 
 		const postData = computed(() => {
             const author = store.state.user.name
@@ -88,6 +101,7 @@ export default defineComponent({
 			title,
 			onFormSubmit,
 			excerpt,
+			beforeUploadCheck
 		}
 	},
 })
