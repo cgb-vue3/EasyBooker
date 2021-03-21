@@ -6,7 +6,9 @@
 			:key="post._id"
 		>
 			<h4>
-				<router-link to="/" class="card-title">
+				<router-link :to="{'name': 'posts', params: {
+					id: post._id
+				}}" class="card-title">
 					{{ post.title }}
 				</router-link>
 			</h4>

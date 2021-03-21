@@ -14,9 +14,10 @@ export interface GlobalDataProps {
     token: string | null;
     loading: boolean;
     user: UserProps;
-    column? : ColumnProps | {};
+    column?: ColumnProps | {};
     columns: ColumnProps[];
     posts: PostProps[];
+    post: object;
 }
 
 const store = createStore<GlobalDataProps>({
@@ -36,7 +37,8 @@ const store = createStore<GlobalDataProps>({
         },
         column: {},
         columns: [],
-        posts: []
+        posts: [],
+        post: {},
     },
     mutations: {
         setUser(state, user) {
@@ -56,13 +58,16 @@ const store = createStore<GlobalDataProps>({
         },
         logOut(state) {
             state.user.isLogin = false
-             localStorage.removeItem('token')
+            localStorage.removeItem('token')
         },
         getColumns(state, payload) {
             state.columns = payload.list
         },
         getPosts(state, payload) {
             state.posts = payload.list
+        },
+        getPostById(state, post) {
+            state.post = post
         },
         getColumn(state, payload) {
             state.column = payload
@@ -84,7 +89,7 @@ const store = createStore<GlobalDataProps>({
             ctx.commit('getColumn', result.data)
         },
         async getPosts(ctx, columnId) {
-            const url  = `/columns/${columnId}/posts`
+            const url = `/columns/${columnId}/posts`
             const result = await axios.get(url, {
                 params: {
                     currentPage: 1,
@@ -93,10 +98,15 @@ const store = createStore<GlobalDataProps>({
             })
             ctx.commit('getPosts', result.data)
         },
+        async getPostById(ctx, postId) {
+            const url = `/posts/${postId}`
+            const result = await axios.get(url)
+            ctx.commit('getPostById', result.data)
+        },
         async logIn(ctx, user) {
             // 获取token
             const result: any = await axios.post('/user/login', user)
-            if(result.msg !== '请求成功') {
+            if (result.msg !== '请求成功') {
                 return Promise.reject('error')
             } else {
                 const token = result.data.token
@@ -107,7 +117,7 @@ const store = createStore<GlobalDataProps>({
         async getUser(ctx, token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
             const userMessage: any = await axios.get('/user/current')
-            if(userMessage.msg === "请求成功") {
+            if (userMessage.msg === "请求成功") {
                 ctx.commit('setUser', userMessage.data)
                 console.log('user', store.state.user, userMessage.data)
             } else {
@@ -117,13 +127,6 @@ const store = createStore<GlobalDataProps>({
         },
         async createPost(ctx, posts) {
             const post: any = await axios.post('/posts', posts)
-            console.log(post)
-            // if(post.msg === "请求成功") {
-            //     ctx.commit('setUser', post.data)
-            //     console.log('user', store.state.user, post.data)
-            // } else {
-            //     console.log('token 错误或过期！')
-            // }
         },
     },
 })
