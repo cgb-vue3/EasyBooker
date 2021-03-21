@@ -117,13 +117,6 @@ const store = createStore<GlobalDataProps>({
         },
         async createPost(ctx, posts) {
             const post: any = await axios.post('/posts', posts)
-            console.log(post)
-            // if(post.msg === "请求成功") {
-            //     ctx.commit('setUser', post.data)
-            //     console.log('user', store.state.user, post.data)
-            // } else {
-            //     console.log('token 错误或过期！')
-            // }
         },
     },
 })

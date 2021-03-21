@@ -37,11 +37,12 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import {useStore} from 'vuex'
 import axios from 'axios'
 
 type UploadingStatus = 'beforeUpload' | 'upLoading' | 'fileUploaded'
 const instance = axios.create({
-	baseURL: 'https://mallapi.duyiedu.com/',
+    baseURL: 'http://127.0.0.1:3000/api/',
 	timeout: 5000,
 })
 
@@ -63,7 +64,9 @@ export default defineComponent({
 		const avatar = ref('')
 		const handleClick = () => {
 			fileInput.value.click()
-		}
+        }
+        const store = useStore()
+        instance.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
 
 		const fileChange = (e: Event) => {
 			const files = (e.target as HTMLInputElement).files
@@ -77,15 +80,12 @@ export default defineComponent({
 				}
 
 				const formData = new FormData()
-				formData.append('avatar', fileName)
+				formData.append('file', fileName)
 
 				instance
 					.post(props.action, formData, {
 						headers: {
-							'Content-Type': 'multipart/form-data',
-						},
-						params: {
-							appkey: 'span_1604795537548',
+                            'Content-Type': 'multipart/form-data',
 						},
 						onUploadProgress: function (progressEvent) {
 							uploadStatus.value = 'upLoading'
@@ -94,9 +94,10 @@ export default defineComponent({
 					})
 					.then(
 						(res) => {
-							uploadStatus.value = 'fileUploaded'
-							avatar.value = res.data.data.url
-							ctx.emit('fileUploaded', res)
+                            uploadStatus.value = 'fileUploaded'
+                            const data = JSON.parse(res.data)
+							avatar.value = data.url
+							ctx.emit('fileUploaded', data)
 						},
 						(err) => {
 							console.log('上传失败' + err)

@@ -3,7 +3,7 @@
 		<h2>新建文章</h2>
 		<up-loading
 			:beforeUpload="beforeUploadCheck"
-			action="/upload/images"
+			action="/upload"
 			v-on="uploadEvent"
 			class="uploading"
 		>
@@ -84,6 +84,7 @@ export default defineComponent({
 		const formData = reactive({
 			title: '',
 			excerpt: '',
+			image: ''
 		})
 		const router = useRouter()
 		const store = useStore()
@@ -107,7 +108,8 @@ export default defineComponent({
 			},
 			fileUploaded(data: any) {
 				console.log('fileUploaded', data)
-				avatar.value = data.data.data.url
+				avatar.value = data.data.url
+				formData.image = data.data._id
 			},
 			fileUploaderror(data: any) {
 				console.log('fileUploaderror', data)
@@ -118,7 +120,7 @@ export default defineComponent({
 			const author = store.state.user._id
 
 			return {
-				image: '6055f50a9c7ab1263babb2c4',
+				image: formData.image,
 				column: columnId,
 				author: author,
 				content: formData.excerpt,
@@ -130,7 +132,7 @@ export default defineComponent({
 			console.log('submit:', postData)
 			if (result) {
 				store.dispatch('createPost', postData.value)
-				// router.push('/columns/' + columnId)
+				router.push('/columns/' + columnId)
 			}
 		}
 		return {
