@@ -31,11 +31,11 @@
 			class="post-author d-flex justify-content-between py-3 align-items-center border-bottom"
 		>
 			<div class="d-flex justify-content-between">
-				<img
-					:src="post.author && post.author.avatar.url"
+				<!-- <img
+					:src="post.author.avatar && post.author.avatar.url"
 					alt="desc"
 					class="rounded-circle mx-2 p-2 border border-1 avatar"
-				/>
+				/> -->
 				<div>
 					<h6 class="mt-2">
 						{{ post.author && post.author.nickName }}
@@ -48,6 +48,21 @@
 			<span class="text-secondary">{{ post.createdAt }}</span>
 		</div>
 		<div class="my-5" v-html="post.content"></div>
+
+		<div class="btn-group" role="group">
+			<router-link
+				:to="{
+					name: 'updatePost',
+					query: { id: post._id },
+					params: { post: JSON.stringify(post)},
+				}"
+				type="button"
+				class="btn btn-success px-3"
+			>
+				编辑
+			</router-link>
+			<button type="button" class="btn btn-danger px-3">删除</button>
+		</div>
 	</div>
 </template>
 
@@ -69,6 +84,7 @@ export default defineComponent({
 		})
 
 		console.log('post', post.value)
+
 		return {
 			post,
 		}
