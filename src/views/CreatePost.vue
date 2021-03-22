@@ -6,6 +6,7 @@
 			action="/upload"
 			v-on="uploadEvent"
 			class="uploading"
+			:status="updatePost ? 'fileUploaded' : null"
 		>
 			<template v-slot:beforeUpload="upLoadProps">
 				<div class="uploading-item" @click="upLoadProps.handleClick">
@@ -20,8 +21,11 @@
 			</template>
 
 			<template v-slot:fileUploaded="upLoadedProps">
-				<div @click="upLoadedProps.handleClick" class="uploading-item" :style="{background: `url(${avatar})`
-				}">
+				<div
+					@click="upLoadedProps.handleClick"
+					class="uploading-item"
+					:style="{ background: `url(${uploadedImg})` }"
+				>
 					<h2 class="re-uploading">点击重新上传</h2>
 				</div>
 			</template>
@@ -43,21 +47,20 @@
 				v-model="formData.excerpt"
 			></validate-input>
 
-			<template v-slot:submit> 创建 </template>
+			<template v-slot:submit> {{ updatePost ? '更新' : '创建'}} </template>
 		</validate-form>
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, PropType } from 'vue'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 import UpLoading from '../components/UpLoading.vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import uploadCheck from '../hooks/useUploadCheck'
 import createMessage from '../hooks/GlobalMessage'
-
 
 const TitleRules: RulesProp = [
 	{
@@ -80,19 +83,32 @@ export default defineComponent({
 		UpLoading,
 	},
 	setup() {
-
-		const formData = reactive({
-			title: '',
-			excerpt: '',
-			image: ''
-		})
+		const route = useRoute()
 		const router = useRouter()
 		const store = useStore()
 		const beforeUploadProps = ref('')
 		const columnId = store.state.user.columnId
+		const uploadedImg = ref()
+
+		const formData = reactive({
+			title: '',
+			excerpt: '',
+			image: '',
+		})
+
+		let updatePost: any
+		if (route.params.post) {
+			updatePost = JSON.parse('' + route.params.post)
+			formData.title = updatePost.title
+			formData.excerpt = updatePost.excerpt
+			formData.image = updatePost.image._id
+			uploadedImg.value = updatePost.image.url
+		}
+		console.log('route', formData)
+
 		// 文件校验
 		const beforeUploadCheck = (file: File) => {
-			if (!uploadCheck(file)) {	
+			if (!uploadCheck(file)) {
 				createMessage(file.name + '是不支持的类型', 'error', 2000)
 				return false
 			}
@@ -100,7 +116,6 @@ export default defineComponent({
 			return true
 		}
 
-		const avatar = ref()
 		// uploading 事件
 		const uploadEvent = {
 			uploading(data: any) {
@@ -108,7 +123,7 @@ export default defineComponent({
 			},
 			fileUploaded(data: any) {
 				console.log('fileUploaded', data)
-				avatar.value = data.data.url
+				uploadedImg.value = data.data.url
 				formData.image = data.data._id
 			},
 			fileUploaderror(data: any) {
@@ -125,14 +140,26 @@ export default defineComponent({
 				author: author,
 				content: formData.excerpt,
 				title: formData.title,
+				postId: updatePost._id,
 			}
 		})
 
 		const onFormSubmit = (result: boolean) => {
 			console.log('submit:', postData)
 			if (result) {
-				store.dispatch('createPost', postData.value)
-				router.push('/columns/' + columnId)
+				const method = postData.value.postId
+					? 'updatePost'
+					: 'createPost'
+				store.dispatch(method, postData.value).then(() => {
+					createMessage(
+							`${method}成功,1s后跳转至文章专栏`,
+							'success',
+							1000
+						)
+					setTimeout(() => {
+						router.push('/columns/' + columnId)
+					}, 1000)
+				})
 			}
 		}
 		return {
@@ -143,7 +170,8 @@ export default defineComponent({
 			beforeUploadCheck,
 			uploadEvent,
 			beforeUploadProps,
-			avatar
+			uploadedImg,
+			updatePost,
 		}
 	},
 })
@@ -160,7 +188,6 @@ export default defineComponent({
 		justify-content: center;
 		cursor: pointer;
 
-
 		.re-uploading {
 			opacity: 0;
 			width: 100%;
@@ -170,9 +197,8 @@ export default defineComponent({
 
 			&:hover {
 				opacity: 1;
+			}
 		}
-		}
-		
 	}
 }
 </style>

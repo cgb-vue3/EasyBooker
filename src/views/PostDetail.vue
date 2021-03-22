@@ -31,11 +31,11 @@
 			class="post-author d-flex justify-content-between py-3 align-items-center border-bottom"
 		>
 			<div class="d-flex justify-content-between">
-				<img
-					:src="post.author && post.author.avatar.url"
+				<!-- <img
+					:src="post.author.avatar && post.author.avatar.url"
 					alt="desc"
 					class="rounded-circle mx-2 p-2 border border-1 avatar"
-				/>
+				/> -->
 				<div>
 					<h6 class="mt-2">
 						{{ post.author && post.author.nickName }}
@@ -48,29 +48,73 @@
 			<span class="text-secondary">{{ post.createdAt }}</span>
 		</div>
 		<div class="my-5" v-html="post.content"></div>
+
+		<div class="btn-group" role="group" v-if="isEdit">
+			<router-link
+				:to="{
+					name: 'updatePost',
+					query: { id: post._id },
+					params: { post: JSON.stringify(post) },
+				}"
+				type="button"
+				class="btn btn-success px-3 shadow-none"
+			>
+				编辑
+			</router-link>
+			<button type="button" class="btn btn-danger px-3 shadow-none" @click="showMadal = true">删除</button>
+		</div>
+
+        <modal @click-ensure="handleEnsure" v-if="showMadal">
+            <p>kkkkkkkk</p>
+        </modal>
 	</div>
 </template>
 
 
 <script>
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, ref, watch } from 'vue'
+import Modal from '../components/Modal.vue'
+import createMessage from '../hooks/GlobalMessage'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+
 export default defineComponent({
-	props: {},
+    props: {},
+    components: {
+        Modal
+    },
 	setup(props) {
 		const store = useStore()
-		const route = useRoute()
-		onMounted(() => {
-			store.dispatch('getPostById', route.params.id)
-		})
+        const route = useRoute()
+        const router = useRouter()
+        const postId = route.params.id
+        const showMadal = ref(false)
+		store.dispatch('getPostById', postId)
+
+		
 		const post = computed(() => {
 			return store.state.post
 		})
+        const isEdit = computed(( ) => {
+            if(!post.value.author) {
+                return false
+            }
 
-		console.log('post', post.value)
+            return post.value.author._id === store.state.user._id ? true : false
+        })
+        const handleEnsure = () => {
+            store.dispatch('deletePost', postId).then(() => {
+                createMessage('删除成功，1s后回到专栏首页', 'success', 1000)
+                setTimeout(() => {
+                    router.push('/columns/' + store.state.column._id)
+                }, 1000)
+            })
+        }
 		return {
-			post,
+            post,
+            isEdit,
+            handleEnsure,
+            showMadal
 		}
 	},
 })

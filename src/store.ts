@@ -127,6 +127,30 @@ const store = createStore<GlobalDataProps>({
         },
         async createPost(ctx, posts) {
             const post: any = await axios.post('/posts', posts)
+            if (post.msg === "请求成功") {
+                return Promise.resolve('success')
+            } else {
+                console.log('文章创建失败！')
+                return Promise.reject('error')
+            }
+        },
+        async updatePost(ctx, posts) {
+            const post: any = await axios.patch('/posts/' + posts.postId, posts)
+            if (post.msg === "请求成功") {
+                return Promise.resolve('success')
+            } else {
+                console.log('文章更新失败！')
+                return Promise.reject('error')
+            }
+        },
+        async deletePost(ctx, postId) {
+            const post: any = await axios.delete('/posts/' + postId)
+            if (post.msg === "请求成功") {
+                return Promise.resolve('success')
+            } else {
+                console.log('文章删除失败！')
+                return Promise.reject('error')
+            }
         },
     },
 })

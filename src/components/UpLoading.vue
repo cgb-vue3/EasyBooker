@@ -36,9 +36,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import {useStore} from 'vuex'
 import axios from 'axios'
+import uploadCheck from '@/hooks/useUploadCheck'
 
 type UploadingStatus = 'beforeUpload' | 'upLoading' | 'fileUploaded'
 const instance = axios.create({
@@ -56,11 +57,14 @@ export default defineComponent({
 			type: Function,
 			required: true,
 		},
+		status: {
+			type: String as PropType<UploadingStatus>,
+		}
 	},
 	emits: ['uploading', 'fileUploaded', 'fileUploaderror'],
 	setup(props, ctx) {
 		const fileInput = ref()
-		const uploadStatus = ref<UploadingStatus>('beforeUpload')
+		let uploadStatus = ref<UploadingStatus>('beforeUpload')
 		const avatar = ref('')
 		const handleClick = () => {
 			fileInput.value.click()
@@ -68,6 +72,8 @@ export default defineComponent({
         const store = useStore()
         instance.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
 
+
+		props.status && (uploadStatus = ref<UploadingStatus>(props.status))
 		const fileChange = (e: Event) => {
 			const files = (e.target as HTMLInputElement).files
 

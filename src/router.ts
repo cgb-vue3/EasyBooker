@@ -45,6 +45,14 @@ const router = createRouter({
             }
         },
         {
+            path: '/create',
+            name: 'updatePost',
+            component: CreatePost,
+            meta: {
+                RequireLogin: true
+            }
+        },
+        {
             path: '/posts/:id',
             name: 'posts',
             component: ()=> import('./views/PostDetail.vue')
