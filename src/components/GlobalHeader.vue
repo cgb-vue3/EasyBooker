@@ -21,8 +21,10 @@
 					</button>
 				</router-link>
 			</form>
+			
 			<drop-down :title="User.nickName" v-else>
 				<drop-down-item @click="createPost"> 新建文章 </drop-down-item>
+				<drop-down-item @click="handleEdit"> 编辑资料 </drop-down-item>
 				<drop-down-item @click="myColumn"> 我的专栏 </drop-down-item>
 				<drop-down-item @click="handleQuit"> 退出 </drop-down-item>
 			</drop-down>
@@ -48,14 +50,7 @@ export default defineComponent({
 		DropDownItem,
 		DropDown,
 	},
-	props: {
-		user: {
-			type: Object as PropType<UserProps>,
-			required: true,
-		},
-	},
-	setup(props) {
-		const User = computed(() => props.user)
+	setup() {
 		const store = useStore()
 		const router = useRouter()
 		const createPost = () => {
@@ -65,15 +60,23 @@ export default defineComponent({
 			router.push('/')
 			store.commit('logOut')
 		}
+		const handleEdit = () => {
+			router.push({name: 'edit'})
+		}
 		const myColumn = () => {
 			const columnId = store.state.user.columnId
 			router.push({name: 'columns', params: { id: columnId }})
 		}
+		const User = computed(() => {
+			return store.state.user
+		})
+
 		return {
 			User,
 			handleQuit,
 			createPost,
-			myColumn
+			myColumn,
+			handleEdit
 		}
 	},
 })

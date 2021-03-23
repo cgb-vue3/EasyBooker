@@ -1,5 +1,5 @@
 <template>
-	<div class="modal d-block" tabindex="-1" v-if="isShow">
+	<div class="modal d-block" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header py-2">
@@ -9,7 +9,7 @@
 						class="btn-close shadow-none fs-6"
 						data-bs-dismiss="modal"
 						aria-label="Close"
-                        @click="isShow = false"
+                        @click="handleClose"
 					></button>
 				</div>
 
@@ -36,26 +36,26 @@
 	</div>
 </template>
 <script>
-import { defineComponent,ref } from 'vue'
+import { defineComponent,ref, computed } from 'vue'
 
 export default defineComponent({
 	props: {
     },
-    emits: ['click-cancel', 'click-ensure'],
+    emits: ['click-cancel', 'click-ensure', 'click-close'],
 	setup(props, ctx) {
-        const isShow = ref(true)
         const handleCancel = () => {
-            isShow.value = false
             ctx.emit('click-cancel')
         }
         const handleEnsure = () => {
-            isShow.value = false
             ctx.emit('click-ensure')
+        }
+        const handleClose = () => {
+            ctx.emit('click-close')
         }
 		return {
             handleCancel,
             handleEnsure,
-            isShow
+            handleClose
 		}
 	},
 })

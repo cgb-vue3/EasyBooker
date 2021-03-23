@@ -179,8 +179,7 @@ export const Posts = [
 
   export interface UserProps {
     isLogin: boolean;
-    name: string;
-    id?: number;
+    nickName?: string;
     columnId?: string;
   }
 

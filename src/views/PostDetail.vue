@@ -31,11 +31,15 @@
 			class="post-author d-flex justify-content-between py-3 align-items-center border-bottom"
 		>
 			<div class="d-flex justify-content-between">
-				<!-- <img
-					:src="post.author.avatar && post.author.avatar.url"
+				<img
+					:src="
+						post.author &&
+						post.author.avatar &&
+						post.author.avatar.url
+					"
 					alt="desc"
 					class="rounded-circle mx-2 p-2 border border-1 avatar"
-				/> -->
+				/>
 				<div>
 					<h6 class="mt-2">
 						{{ post.author && post.author.nickName }}
@@ -61,12 +65,23 @@
 			>
 				编辑
 			</router-link>
-			<button type="button" class="btn btn-danger px-3 shadow-none" @click="showMadal = true">删除</button>
+			<button
+				type="button"
+				class="btn btn-danger px-3 shadow-none"
+				@click="showMadal = true"
+			>
+				删除
+			</button>
 		</div>
 
-        <modal @click-ensure="handleEnsure" v-if="showMadal">
-            <p>kkkkkkkk</p>
-        </modal>
+		<modal
+			@click-ensure="handleEnsure"
+			@click-close="handleClose"
+			@click-cancel="handleCancel"
+			v-if="showMadal"
+		>
+			<p>确定要删除这篇文章吗？</p>
+		</modal>
 	</div>
 </template>
 
@@ -79,42 +94,52 @@ import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
-    props: {},
-    components: {
-        Modal
-    },
+	props: {},
+	components: {
+		Modal,
+	},
 	setup(props) {
 		const store = useStore()
-        const route = useRoute()
-        const router = useRouter()
-        const postId = route.params.id
-        const showMadal = ref(false)
+		const route = useRoute()
+		const router = useRouter()
+		const postId = route.params.id
+		const showMadal = ref(false)
 		store.dispatch('getPostById', postId)
 
-		
 		const post = computed(() => {
 			return store.state.post
 		})
-        const isEdit = computed(( ) => {
-            if(!post.value.author) {
-                return false
-            }
+		const isEdit = computed(() => {
+			if (!post.value.author) {
+				return false
+			}
 
-            return post.value.author._id === store.state.user._id ? true : false
-        })
-        const handleEnsure = () => {
-            store.dispatch('deletePost', postId).then(() => {
-                createMessage('删除成功，1s后回到专栏首页', 'success', 1000)
-                setTimeout(() => {
-                    router.push('/columns/' + store.state.column._id)
-                }, 1000)
-            })
-        }
+			return post.value.author._id === store.state.user._id ? true : false
+		})
+		const handleEnsure = () => {
+			showMadal.value = false
+			store.dispatch('deletePost', postId).then((res) => {
+				createMessage('删除成功，1s后回到专栏首页', 'success', 1000)
+				setTimeout(() => {
+					router.push('/columns/' + store.state.column._id)
+				}, 1000)
+			})
+		}
+
+		const handleCancel = () => {
+			showMadal.value = false
+		}
+
+		const handleClose = () => {
+			showMadal.value = false
+		}
 		return {
-            post,
-            isEdit,
-            handleEnsure,
-            showMadal
+			post,
+			isEdit,
+			handleEnsure,
+			handleCancel,
+			handleClose,
+			showMadal,
 		}
 	},
 })

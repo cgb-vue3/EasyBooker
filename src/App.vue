@@ -2,7 +2,7 @@
 	<div id="App">
 		<div class="bg-white border-bottom">
 			<div class="container w-75">
-				<GlobalHeader :user="user" />
+				<GlobalHeader />
 			</div>
 		</div>
 
@@ -28,7 +28,6 @@ export default defineComponent({
 	},
 	setup() {
 		const store = useStore()
-		const user = computed(() => store.state.user)
 		const isLoading = computed(() => store.state.loading)
 		onMounted(() => {
 			const token = store.state.token
@@ -39,7 +38,6 @@ export default defineComponent({
 
 		const isError = computed(() => store.state.error)
 		return {
-			user,
 			isLoading,
 			isError
 		}
