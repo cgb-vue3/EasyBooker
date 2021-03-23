@@ -22,7 +22,7 @@
 	</div>
 </template>
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import useClickOutside from '../hooks/useClickOutside.ts'
 
 export default defineComponent({
@@ -33,7 +33,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const DropDownTitle = ref(props.title)
+		const DropDownTitle = computed(() => {
+			return props.title
+		})
 		const isShowRef = ref(false)
 		const dropdownRef = ref(null)
 

@@ -31,9 +31,6 @@ const store = createStore<GlobalDataProps>({
         loading: false,
         user: {
             isLogin: false,
-            name: 'DUING',
-            id: 101,
-            columnId: '5f3e86d62c56ee13bb830961c'
         },
         column: {},
         columns: [],
@@ -149,6 +146,27 @@ const store = createStore<GlobalDataProps>({
                 return Promise.resolve('success')
             } else {
                 console.log('文章删除失败！')
+                return Promise.reject('error')
+            }
+        },
+        async updateUser(ctx, users) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${ctx.state.token}`
+            const user: any = await axios.patch('/user/' + users._id, users)
+            if (user.msg === "请求成功") {
+                ctx.dispatch('getUser', ctx.state.token)
+                return Promise.resolve('success')
+            } else {
+                console.log('用户信息更新失败！')
+                return Promise.reject('error')
+            }
+        },
+        async updateColumn(ctx, columns) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${ctx.state.token}`
+            const user: any = await axios.patch('/columns/' + columns._id, columns)
+            if (user.msg === "请求成功") {
+                return Promise.resolve('success')
+            } else {
+                console.log('专栏信息更新失败！')
                 return Promise.reject('error')
             }
         },

@@ -57,6 +57,11 @@ const router = createRouter({
             name: 'posts',
             component: ()=> import('./views/PostDetail.vue')
         },
+        {
+            path: '/edit',
+            name: 'edit',
+            component: ()=> import('./views/EditProfile.vue')
+        },
     ]
 })
 

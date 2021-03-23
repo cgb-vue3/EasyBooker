@@ -140,7 +140,7 @@ export default defineComponent({
 				author: author,
 				content: formData.excerpt,
 				title: formData.title,
-				postId: updatePost._id,
+				postId: updatePost && updatePost._id,
 			}
 		})
 
