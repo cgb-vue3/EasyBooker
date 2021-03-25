@@ -21,10 +21,14 @@
 				</div>
 			</div>
 		</div>
+
+		<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
 	</div>
 </template>
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
+import useLoadMore from '../hooks/useLoadMore'
+
 type Avatar = {
 	_id: string;
 	url?: string;
@@ -59,8 +63,17 @@ export default defineComponent({
 		})
 		const Columns = computed(() => props.ColumnList)
 
+		const loadMorePage = useLoadMore('getColumns', {
+				currentPage: 1,
+				pageSize: 3,
+			})
+		const loadMore = loadMorePage.loadMorePage
+		const isLastPage = loadMorePage.isLastPage
+
 		return {
 			Columns,
+			loadMore,
+			isLastPage
 		}
 	},
 })

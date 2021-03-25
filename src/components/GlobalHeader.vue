@@ -23,6 +23,10 @@
 			</form>
 			
 			<drop-down :title="User.nickName" v-else>
+				<template v-slot:dropdownTitle>
+					<img :src="User.avatar.url" alt="" class="avatar">
+				</template>
+
 				<drop-down-item @click="createPost"> 新建文章 </drop-down-item>
 				<drop-down-item @click="handleEdit"> 编辑资料 </drop-down-item>
 				<drop-down-item @click="myColumn"> 我的专栏 </drop-down-item>
@@ -83,4 +87,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	cursor: pointer;
+	opacity: 0.5;
+}
 </style>

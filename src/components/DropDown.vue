@@ -1,16 +1,21 @@
 <template>
 	<div class="dropdown">
-		<button
-			class="btn btn-primary btn-sm dropdown-toggle px-3 shadow-none"
-			type="button"
-			id="dropdownMenuButton"
-			data-bs-toggle="dropdown"
-			aria-expanded="false"
-			@click="isShowRef = !isShowRef"
-			ref="dropdownRef"
-		>
-			{{ DropDownTitle }}
-		</button>
+		<div @click="isShowRef = !isShowRef"
+					ref="dropdownRef">
+			<slot name="dropdownTitle">
+				<button
+					class="btn btn-primary btn-sm dropdown-toggle px-3 shadow-none"
+					type="button"
+					id="dropdownMenuButton"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+					
+				>
+					{{ DropDownTitle }}
+				</button>
+			</slot>
+		</div>
+
 		<ul
 			v-if="isShowRef"
 			class="dropdown-menu py-0"
@@ -41,7 +46,7 @@ export default defineComponent({
 
 		const isOut = useClickOutside(dropdownRef)
 		watch(isOut, () => {
-			if(isOut.value) {
+			if (isOut.value) {
 				isShowRef.value = false
 			}
 		})
