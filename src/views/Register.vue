@@ -1,45 +1,47 @@
 <template>
-	<div class="register">
-		<validate-form @form-submit="onFormSubmit" class="validate-form">
-			<h1 class="py-4 text-center">注册U-L账户</h1>
-			<validate-input
-				title="邮箱地址"
-				:rules="EmailRules"
-				v-model="formData.email"
-				placeholder="请输入邮箱"
-			>
-			</validate-input>
-
-			<validate-input
-				title="昵称"
-				:rules="NickNameRules"
-				v-model="formData.nickName"
-				placeholder="请输入昵称"
-			>
-			</validate-input>
-
-			<validate-input
-				title="密码"
-				:rules="PasswordRules"
-				v-model="formData.password"
-				type="password"
-				placeholder="请输入密码"
-			></validate-input>
-
-			<validate-input
-				title="重复密码"
-				:rules="customRules"
-				v-model="formData.rePassword"
-				type="password"
-				placeholder="请再次输入密码"
-			></validate-input>
-			<div class="mb-4">
-				<router-link to="/login" class="link-primary fs-6"
-					>已经有账户了？去登录</router-link
+	<div class="d-flex justify-content-center">
+		<div class="register">
+			<validate-form @form-submit="onFormSubmit" class="validate-form">
+				<h3 class="py-4 text-center">注册账户</h3>
+				<validate-input
+					title="邮箱地址"
+					:rules="EmailRules"
+					v-model="formData.email"
+					placeholder="请输入邮箱"
 				>
-			</div>
-			<template v-slot:submit> 注册 </template>
-		</validate-form>
+				</validate-input>
+
+				<validate-input
+					title="昵称"
+					:rules="NickNameRules"
+					v-model="formData.nickName"
+					placeholder="请输入昵称"
+				>
+				</validate-input>
+
+				<validate-input
+					title="密码"
+					:rules="PasswordRules"
+					v-model="formData.password"
+					type="password"
+					placeholder="请输入密码"
+				></validate-input>
+
+				<validate-input
+					title="重复密码"
+					:rules="customRules"
+					v-model="formData.rePassword"
+					type="password"
+					placeholder="请再次输入密码"
+				></validate-input>
+				<div class="mb-4">
+					<router-link to="/login" class="link-primary fs-6"
+						>已经有账户了？去登录</router-link
+					>
+				</div>
+				<template v-slot:submit> 注册 </template>
+			</validate-form>
+		</div>
 	</div>
 </template>
 
@@ -155,9 +157,15 @@ export default defineComponent({
 .register {
 	display: flex;
 	justify-content: center;
+	min-height: 500px;
+	width: 400px;
+
+	h3 {
+		color: #5e6c84;
+	}
 
 	.validate-form {
-		width: 400px;
+		width: 266px;
 	}
 }
 </style>

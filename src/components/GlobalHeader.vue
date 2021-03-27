@@ -92,6 +92,5 @@ export default defineComponent({
 	height: 40px;
 	border-radius: 50%;
 	cursor: pointer;
-	opacity: 0.5;
 }
 </style>

@@ -11,13 +11,13 @@ function useLoadMore(actionName: any, params: any) {
     const loadMorePage = () => {
         currentPage.value += 1
         store.dispatch(actionName, {
+            columnId: params.columnId,
             currentPage: 1,
             pageSize: params.pageSize * currentPage.value
         }).then(res => {
             total = res.count
         })
     }
-
 
     return {
         loadMorePage,

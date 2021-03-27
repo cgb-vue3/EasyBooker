@@ -88,19 +88,20 @@ const store = createStore<GlobalDataProps>({
             const result = await axios.get('/columns/' + columnId)
             ctx.commit('getColumn', result.data)
         },
-        async getPosts(ctx, columnId) {
-            const isLoaded = ctx.state.posts.find(ele => ele.column === columnId)
-            if ( !isLoaded) {
-                const url = `/columns/${columnId}/posts`
+        async getPosts(ctx, payload) {
+            ctx.state.posts.find(ele => ele.column === payload.columnId)
+            
+                const url = `/columns/${payload.columnId}/posts`
                 const result = await axios.get(url, {
                     params: {
-                        currentPage: 1,
-                        pageSize: 10
+                        currentPage: payload.currentPage,
+                        pageSize: payload.pageSize,
                     }
                 })
                 ctx.commit('getPosts', result.data)
-            }
-            
+
+                return result.data
+
         },
         async getPostById(ctx, postId) {
             const url = `/posts/${postId}`
@@ -181,7 +182,7 @@ const store = createStore<GlobalDataProps>({
     getters: {
         getColumnById: (state) => (columnId: any) => {
             console.log('xx', columnId)
-            return state.columns.find( ele => ele._id === columnId)
+            return state.columns.find(ele => ele._id === columnId)
         },
     }
 })

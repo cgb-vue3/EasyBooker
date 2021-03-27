@@ -1,5 +1,6 @@
 <template>
 	<div class="row gy-4">
+		<h4 class="text-center mb-4">发现精彩</h4>
 		<div class="col-4" v-for="column in Columns" :key="column._id">
 			<div class="card py-3">
 				<img
@@ -9,7 +10,7 @@
 				/>
 				<div class="card-body">
 					<h5 class="card-title">{{ column.title }}</h5>
-					<div class="card-text">
+					<div class="card-text mb-2">
 						{{ column.description }}
 					</div>
 					<router-link
@@ -22,7 +23,9 @@
 			</div>
 		</div>
 
-		<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
+		<div class="d-flex justify-content-center">
+			<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
+		</div>
 	</div>
 </template>
 <script lang="ts">
@@ -64,6 +67,7 @@ export default defineComponent({
 		const Columns = computed(() => props.ColumnList)
 
 		const loadMorePage = useLoadMore('getColumns', {
+
 				currentPage: 1,
 				pageSize: 3,
 			})
@@ -93,6 +97,12 @@ export default defineComponent({
 
 	.card-body {
 		text-align: center;
+
+		.card-title {
+			overflow: hidden;
+			white-space:nowrap;
+			text-overflow:ellipsis;
+		}
 
 		.card-text {
 			text-align: start;

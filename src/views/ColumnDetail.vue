@@ -2,19 +2,22 @@
 	<div class="container w-75 column-detail">
 		<div class="d-flex p-3 mb-4 border-bottom">
 			<img
-				:src="columns.avatar && columns.avatar.url"
-				:alt="columns.title"
+				:src="column.avatar && column.avatar.url"
+				:alt="column.title"
 				class="rounded-circle column-avatar"
 			/>
 			<div class="card-content">
-				<h5 class="card-title">{{ columns.title }}</h5>
+				<h5 class="card-title">{{ column.title }}</h5>
 				<p class="card-text">
-					{{ columns.description + '...' }}
+					{{ column.description + '...' }}
 				</p>
 			</div>
 		</div>
 
 		<post-list :Posts="posts"></post-list>
+		<div class="d-flex justify-content-center">
+			<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
+		</div>
 	</div>
 </template>
 <script>
@@ -22,6 +25,7 @@ import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PostList from '../components/PostList.vue'
 import { useStore } from 'vuex'
+import useLoadMore from '../hooks/useLoadMore'
 
 export default defineComponent({
 	components: {
@@ -29,32 +33,38 @@ export default defineComponent({
 	},
 	setup() {
 		const route = useRoute()
-		const router = useRouter()
 		const store = useStore()
-
+		const payload = {
+			columnId: route.params.id,
+			currentPage: 1,
+			pageSize: 2,
+		}
 		onMounted(() => {
-			store.dispatch('getPosts', route.params.id)
+			store.dispatch('getPosts', payload)
 
 			if (store.state.user.column === route.params.id) {
 				store.dispatch('getColumn', route.params.id)
-			} 
+			}
 		})
 
-		const columns = computed(() => {
+		const column = computed(() => {
 			if (store.state.user.column === route.params.id) {
 				return store.state.column
 			} else {
 				return store.getters.getColumnById(route.params.id)
 			}
-
 		})
 
 		const posts = computed(() => store.state.posts)
-		console.log(columns, posts)
+		const loadMorePage = useLoadMore('getPosts', payload)
+		const loadMore = loadMorePage.loadMorePage
+		const isLastPage = loadMorePage.isLastPage
 		return {
 			route,
-			columns,
+			column,
 			posts,
+			loadMore,
+			isLastPage,
 		}
 	},
 })
