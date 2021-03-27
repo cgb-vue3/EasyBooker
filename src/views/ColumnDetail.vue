@@ -1,60 +1,82 @@
 <template>
 	<div class="container w-75 column-detail">
 		<div class="d-flex p-3 mb-4 border-bottom">
-			<img :src="columns.avatar && columns.avatar.url" :alt="columns.title" class="rounded-circle column-avatar" />
+			<img
+				:src="column.avatar && column.avatar.url"
+				:alt="column.title"
+				class="rounded-circle column-avatar"
+			/>
 			<div class="card-content">
-				<h5 class="card-title">{{ columns.title }}</h5>
+				<h5 class="card-title">{{ column.title }}</h5>
 				<p class="card-text">
-					{{ columns.description + '...' }}
+					{{ column.description + '...' }}
 				</p>
 			</div>
 		</div>
 
 		<post-list :Posts="posts"></post-list>
+		<div class="d-flex justify-content-center">
+			<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
+		</div>
 	</div>
 </template>
 <script>
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PostList from '../components/PostList.vue'
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
+import useLoadMore from '../hooks/useLoadMore'
 
 export default defineComponent({
 	components: {
-        PostList,
-    },
+		PostList,
+	},
 	setup() {
 		const route = useRoute()
-		const router = useStore()
 		const store = useStore()
+		const payload = {
+			columnId: route.params.id,
+			currentPage: 1,
+			pageSize: 2,
+		}
+		onMounted(() => {
+			store.dispatch('getPosts', payload)
 
-		onMounted(()=> {
-			store.dispatch('getPosts', route.params.id)
-			store.dispatch('getColumn', route.params.id)
+			if (store.state.user.column === route.params.id) {
+				store.dispatch('getColumn', route.params.id)
+			}
 		})
 
-        const columns = computed(() => store.state.column)
- 
-		const posts = computed(() => store.state.posts)
+		const column = computed(() => {
+			if (store.state.user.column === route.params.id) {
+				return store.state.column
+			} else {
+				return store.getters.getColumnById(route.params.id)
+			}
+		})
 
+		const posts = computed(() => store.state.posts)
+		const loadMorePage = useLoadMore('getPosts', payload)
+		const loadMore = loadMorePage.loadMorePage
+		const isLastPage = loadMorePage.isLastPage
 		return {
-            route,
-            columns,
-            posts
+			route,
+			column,
+			posts,
+			loadMore,
+			isLastPage,
 		}
 	},
 })
 </script>
 <style lang="scss" scoped>
 .column-detail {
-
-    .column-avatar {
-        box-sizing: border-box;
-        // padding: 20px 20px 0 0 ;
-        margin-right: 30px;
-        width: 150px;
-        height: 150px;
-    }
+	.column-avatar {
+		box-sizing: border-box;
+		// padding: 20px 20px 0 0 ;
+		margin-right: 30px;
+		width: 150px;
+		height: 150px;
+	}
 }
-
 </style>

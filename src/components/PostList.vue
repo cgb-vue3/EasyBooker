@@ -1,7 +1,7 @@
 <template>
 	<div class="post-list">
 		<div
-			class="card bg-white text-secondary p-3"
+			class="card bg-white text-secondary p-3 mb-4"
 			v-for="post in Posts"
 			:key="post._id"
 		>

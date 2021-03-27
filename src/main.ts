@@ -7,10 +7,8 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:3000/api/'
 
 axios.interceptors.request.use(config => {
-    if(store.state.posts.length == 0  || store.state.columns.length == 0 || store.state.user.isLogin == false) {
-        store.commit('setLoading', true)
-    } 
-    
+    store.commit('setLoading', true)
+
     // 对响应数据做点什么
     return config;
   })

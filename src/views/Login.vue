@@ -1,30 +1,32 @@
 <template>
-	<div class="login">
-		<validate-form @form-submit="onFormSubmit">
-			<h1 class="py-4 text-center">登录到U-L</h1>
-			<validate-input
-				title="邮箱"
-				:rules="EmailRules"
-				v-model="formData.email"
-				placeholder="请输入邮箱"
-			>
-			</validate-input>
-
-			<validate-input
-				title="密码"
-				:rules="PasswordRules"
-				v-model="formData.password"
-				type="password"
-				placeholder="请输入密码"
-			></validate-input>
-
-			<div class="mb-4">
-				<router-link to="/register" class="link-primary mb-5"
-					>还没有账户？去注册一个新的吧！</router-link
+	<div class="d-flex justify-content-center">
+		<div class="login">
+			<validate-form @form-submit="onFormSubmit">
+				<h3 class="py-5 text-center">请登录</h3>
+				<validate-input
+					title="邮箱"
+					:rules="EmailRules"
+					v-model="formData.email"
+					placeholder="请输入邮箱"
 				>
-			</div>
-			<template v-slot:submit> 登录 </template>
-		</validate-form>
+				</validate-input>
+
+				<validate-input
+					title="密码"
+					:rules="PasswordRules"
+					v-model="formData.password"
+					type="password"
+					placeholder="请输入密码"
+				></validate-input>
+
+				<div class="mb-4">
+					<router-link to="/register" class="link-primary mb-5"
+						>还没有账户？去注册一个新的吧！</router-link
+					>
+				</div>
+				<template v-slot:submit> 登录 </template>
+			</validate-form>
+		</div>
 	</div>
 </template>
 
@@ -110,9 +112,15 @@ export default defineComponent({
 .login {
 	display: flex;
 	justify-content: center;
+	height: 500px;
+	width: 400px;
+
+	h3 {
+		color: #5e6c84;
+	}
 
 	.validate-form {
-		width: 400px;
+		width: 266px;
 	}
 }
 </style>
