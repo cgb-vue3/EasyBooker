@@ -4,7 +4,7 @@
 		<div class="submit-area d-flex justify-content-center">
 			<button
 				type="submit"
-				class="btn btn-primary px-4 shadow-none"
+				class="btn btn-primary px-4 shadow-none w-100"
 				@click.prevent="submitForm"
 			>
 				<slot name="submit"> 确定 </slot>

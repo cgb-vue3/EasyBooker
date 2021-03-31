@@ -1,5 +1,5 @@
 <template>
-	<div class="container w-75 column-detail">
+	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main column-detail">
 		<div class="d-flex p-3 mb-4 border-bottom">
 			<img
 				:src="column.avatar && column.avatar.url"

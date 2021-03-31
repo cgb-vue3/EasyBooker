@@ -1,5 +1,5 @@
 <template>
-	<div class="container w-75">
+	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main">
 		<h2>新建文章</h2>
 		<up-loading
 			:beforeUpload="beforeUploadCheck"
@@ -24,7 +24,7 @@
 				<div
 					@click="upLoadedProps.handleClick"
 					class="uploading-item"
-					:style="{ background: `url(${uploadedImg})` }"
+					:style="{ background: `url(${uploadedImg}) no-repeat center center`, }"
 				>
 					<h2 class="re-uploading">点击重新上传</h2>
 				</div>
