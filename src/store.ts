@@ -59,6 +59,7 @@ const store = createStore<GlobalDataProps>({
         },
         getColumns(state, payload) {
             state.columns = payload.list
+            localStorage.setItem('columns', JSON.stringify(state.columns))
         },
         getPosts(state, payload) {
             state.posts = payload.list
@@ -181,8 +182,11 @@ const store = createStore<GlobalDataProps>({
     },
     getters: {
         getColumnById: (state) => (columnId: any) => {
-            console.log('xx', columnId)
-            return state.columns.find(ele => ele._id === columnId)
+            const columnsStr = localStorage.getItem('columns')
+            if (columnsStr) {
+                const column = JSON.parse(columnsStr)
+                return column.find( (ele: any) => ele._id === columnId)
+            }
         },
     }
 })

@@ -1,22 +1,33 @@
 <template>
 	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main column-detail">
-		<div class="d-flex p-3 mb-4 border-bottom">
-			<img
-				:src="column.avatar && column.avatar.url"
-				:alt="column.title"
-				class="rounded-circle column-avatar"
-			/>
-			<div class="card-content">
-				<h5 class="card-title">{{ column.title }}</h5>
-				<p class="card-text">
-					{{ column.description + '...' }}
-				</p>
+		<div
+			class="container bg-white w-75 mt-4"
+		>
+			<div class="d-flex p-3 mb-4 border-bottom">
+				<img
+					:src="column && column.avatar && column.avatar.url"
+					:alt="column &&  column.title"
+					class="rounded-circle column-avatar"
+				/>
+				<div class="card-content">
+					<h5 class="card-title">{{ column && column.title }}</h5>
+					<p class="card-text">
+						{{ column && column.description + '...' }}
+					</p>
+				</div>
 			</div>
-		</div>
 
-		<post-list :Posts="posts"></post-list>
-		<div class="d-flex justify-content-center">
-			<button type="button" class="btn btn-outline-primary" @click="loadMore" v-if="isLastPage">加载更多</button>
+			<post-list :Posts="posts"></post-list>
+			<div class="d-flex justify-content-center">
+				<button
+					type="button"
+					class="btn btn-outline-primary"
+					@click="loadMore"
+					v-if="isLastPage"
+				>
+					加载更多
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
@@ -41,10 +52,7 @@ export default defineComponent({
 		}
 		onMounted(() => {
 			store.dispatch('getPosts', payload)
-
-			if (store.state.user.column === route.params.id) {
-				store.dispatch('getColumn', route.params.id)
-			}
+			store.dispatch('getColumn', route.params.id)
 		})
 
 		const column = computed(() => {
@@ -73,7 +81,6 @@ export default defineComponent({
 .column-detail {
 	.column-avatar {
 		box-sizing: border-box;
-		// padding: 20px 20px 0 0 ;
 		margin-right: 30px;
 		width: 150px;
 		height: 150px;

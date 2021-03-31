@@ -1,54 +1,63 @@
 <template>
 	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main">
-		<h2>新建文章</h2>
-		<up-loading
-			:beforeUpload="beforeUploadCheck"
-			action="/upload"
-			v-on="uploadEvent"
-			class="uploading"
-			:status="updatePost ? 'fileUploaded' : null"
-		>
-			<template v-slot:beforeUpload="upLoadProps">
-				<div class="uploading-item" @click="upLoadProps.handleClick">
-					<h2>点击上传头图</h2>
-				</div>
-			</template>
-
-			<template v-slot:upLoading>
-				<div class="d-flex justify-content-center uploading-item">
-					<div class="spinner-border" role="status"></div>
-				</div>
-			</template>
-
-			<template v-slot:fileUploaded="upLoadedProps">
-				<div
-					@click="upLoadedProps.handleClick"
-					class="uploading-item"
-					:style="{ background: `url(${uploadedImg}) no-repeat center center`, }"
-				>
-					<h2 class="re-uploading">点击重新上传</h2>
-				</div>
-			</template>
-		</up-loading>
-
-		<validate-form @form-submit="onFormSubmit">
-			<validate-input
-				title="文章标题"
-				:rules="TitleRules"
-				v-model="formData.title"
-				placeholder="请输入标题。。。"
+		<div class="container bg-white w-75 ">
+			<h2>新建文章</h2>
+			<up-loading
+				:beforeUpload="beforeUploadCheck"
+				action="/upload"
+				v-on="uploadEvent"
+				class="uploading"
+				:status="updatePost ? 'fileUploaded' : null"
 			>
-			</validate-input>
+				<template v-slot:beforeUpload="upLoadProps">
+					<div
+						class="uploading-item"
+						@click="upLoadProps.handleClick"
+					>
+						<h2>点击上传头图</h2>
+					</div>
+				</template>
 
-			<validate-input
-				tag="textarea"
-				title="新建文章"
-				:rules="PostRules"
-				v-model="formData.excerpt"
-			></validate-input>
+				<template v-slot:upLoading>
+					<div class="d-flex justify-content-center uploading-item">
+						<div class="spinner-border" role="status"></div>
+					</div>
+				</template>
 
-			<template v-slot:submit> {{ updatePost ? '更新' : '创建'}} </template>
-		</validate-form>
+				<template v-slot:fileUploaded="upLoadedProps">
+					<div
+						@click="upLoadedProps.handleClick"
+						class="uploading-item"
+						:style="{
+							background: `url(${uploadedImg}) no-repeat center center`,
+						}"
+					>
+						<h2 class="re-uploading">点击重新上传</h2>
+					</div>
+				</template>
+			</up-loading>
+
+			<validate-form @form-submit="onFormSubmit">
+				<validate-input
+					title="文章标题"
+					:rules="TitleRules"
+					v-model="formData.title"
+					placeholder="请输入标题。。。"
+				>
+				</validate-input>
+
+				<validate-input
+					tag="textarea"
+					title="新建文章"
+					:rules="PostRules"
+					v-model="formData.excerpt"
+				></validate-input>
+
+				<template v-slot:submit>
+					{{ updatePost ? '更新' : '创建' }}
+				</template>
+			</validate-form>
+		</div>
 	</div>
 </template>
 
@@ -89,7 +98,7 @@ export default defineComponent({
 		const beforeUploadProps = ref('')
 		const columnId = store.state.user.columnId
 		const uploadedImg = ref()
-
+		
 		const formData = reactive({
 			title: '',
 			excerpt: '',
@@ -152,10 +161,10 @@ export default defineComponent({
 					: 'createPost'
 				store.dispatch(method, postData.value).then(() => {
 					createMessage(
-							`${method}成功,1s后跳转至文章专栏`,
-							'success',
-							1000
-						)
+						`${method}成功,1s后跳转至文章专栏`,
+						'success',
+						1000
+					)
 					setTimeout(() => {
 						router.push('/columns/' + columnId)
 					}, 1000)

@@ -1,106 +1,111 @@
 <template>
 	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main">
-		<div>
-			<ul class="nav nav-tabs" @click="handleTab">
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						aria-current="page"
-						href="#"
-						profile="user"
-						:class="{ active: tabRef == 'user' }"
-						>编辑个人资料</a
-					>
-				</li>
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						href="#"
-						profile="column"
-						:class="{ active: tabRef == 'column' }"
-						>更新专栏信息</a
-					>
-				</li>
-			</ul>
+		<div class="container bg-white w-75">
+			<div>
+				<ul class="nav nav-tabs" @click="handleTab">
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							href="#"
+							profile="user"
+							:class="{ active: tabRef == 'user' }"
+							>编辑个人资料</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							href="#"
+							profile="column"
+							:class="{ active: tabRef == 'column' }"
+							>更新专栏信息</a
+						>
+					</li>
+				</ul>
 
-			<div class="d-flex justify-content-center">
-				<up-loading
-					:beforeUpload="beforeUploadCheck"
-					action="/upload"
-					v-on="uploadEvent"
-					class="uploading"
-					status="fileUploaded"
+				<div class="d-flex justify-content-center">
+					<up-loading
+						:beforeUpload="beforeUploadCheck"
+						action="/upload"
+						v-on="uploadEvent"
+						class="uploading"
+						status="fileUploaded"
+					>
+						<template v-slot:beforeUpload="upLoadProps">
+							<div
+								class="uploading-item upload-image"
+								@click="upLoadProps.handleClick"
+							>
+								<h2>点击上传头图</h2>
+							</div>
+						</template>
+
+						<template v-slot:upLoading>
+							<div
+								class="d-flex justify-content-center uploading-item"
+							>
+								<div class="spinner-border" role="status"></div>
+							</div>
+						</template>
+
+						<template v-slot:fileUploaded="upLoadedProps">
+							<div
+								@click="upLoadedProps.handleClick"
+								class="uploading-item"
+								:style="{
+									background: `url(${
+										tabRef == 'user'
+											? userData.avatar.url
+											: columnData.avatar.url
+									})`,
+								}"
+							>
+								<h2 class="re-uploading">点击重新上传</h2>
+							</div>
+						</template>
+					</up-loading>
+				</div>
+				<validate-form
+					@form-submit="onFormSubmit"
+					v-if="tabRef == 'user'"
 				>
-					<template v-slot:beforeUpload="upLoadProps">
-						<div
-							class="uploading-item upload-image"
-							@click="upLoadProps.handleClick"
-						>
-							<h2>点击上传头图</h2>
-						</div>
-					</template>
+					<validate-input
+						title="文章标题"
+						:rules="TitleRules"
+						v-model="userData.title"
+						placeholder="请输入标题。。。"
+					>
+					</validate-input>
 
-					<template v-slot:upLoading>
-						<div
-							class="d-flex justify-content-center uploading-item"
-						>
-							<div class="spinner-border" role="status"></div>
-						</div>
-					</template>
+					<validate-input
+						tag="textarea"
+						title="Description"
+						:rules="PostRules"
+						v-model="userData.excerpt"
+					></validate-input>
 
-					<template v-slot:fileUploaded="upLoadedProps">
-						<div
-							@click="upLoadedProps.handleClick"
-							class="uploading-item"
-							:style="{
-								background: `url(${
-									tabRef == 'user'
-										? userData.avatar.url
-										: columnData.avatar.url
-								})`,
-							}"
-						>
-							<h2 class="re-uploading">点击重新上传</h2>
-						</div>
-					</template>
-				</up-loading>
+					<template v-slot:submit> 更新 </template>
+				</validate-form>
+				<validate-form @form-submit="onFormSubmit" v-else>
+					<validate-input
+						title="文章标题"
+						:rules="TitleRules"
+						v-model="columnData.title"
+						placeholder="请输入标题。。。"
+					>
+					</validate-input>
+
+					<validate-input
+						tag="textarea"
+						title="Description"
+						:rules="PostRules"
+						v-model="columnData.excerpt"
+					></validate-input>
+
+					<template v-slot:submit> 更新 </template>
+				</validate-form>
 			</div>
-			<validate-form @form-submit="onFormSubmit" v-if="tabRef == 'user'">
-				<validate-input
-					title="文章标题"
-					:rules="TitleRules"
-					v-model="userData.title"
-					placeholder="请输入标题。。。"
-				>
-				</validate-input>
-
-				<validate-input
-					tag="textarea"
-					title="Description"
-					:rules="PostRules"
-					v-model="userData.excerpt"
-				></validate-input>
-
-				<template v-slot:submit> 更新 </template>
-			</validate-form>
-			<validate-form @form-submit="onFormSubmit" v-else>
-				<validate-input
-					title="文章标题"
-					:rules="TitleRules"
-					v-model="columnData.title"
-					placeholder="请输入标题。。。"
-				>
-				</validate-input>
-
-				<validate-input
-					tag="textarea"
-					title="Description"
-					:rules="PostRules"
-					v-model="columnData.excerpt"
-				></validate-input>
-
-				<template v-slot:submit> 更新 </template>
-			</validate-form>
 		</div>
 	</div>
 </template>
