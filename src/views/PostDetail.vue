@@ -1,87 +1,91 @@
 <template>
-	<div class="container w-75 post-detail bg-white w-75 mt-4 shadow-lg p-4 main">
-		<nav aria-label="breadcrumb ">
-			<ol class="breadcrumb p-3">
-				<li class="breadcrumb-item">
-					<router-link to="/"> 首页 </router-link>
-				</li>
-				<li class="breadcrumb-item">
-					<router-link
-						:to="{
-							name: 'columns',
-							params: {
-								id: post.column,
-							},
-						}"
-					>
-						专栏首页
-					</router-link>
-				</li>
-				<li class="breadcrumb-item active" aria-current="page">
-					{{ post.title }}
-				</li>
-			</ol>
-		</nav>
+	<div
+		class="container w-75 post-detail bg-white w-75 mt-4 shadow-lg p-4 main"
+	>
+		<div class="container w-75 post-detail bg-white w-75">
+			<nav aria-label="breadcrumb ">
+				<ol class="breadcrumb p-3">
+					<li class="breadcrumb-item">
+						<router-link to="/"> 首页 </router-link>
+					</li>
+					<li class="breadcrumb-item">
+						<router-link
+							:to="{
+								name: 'columns',
+								params: {
+									id: post.column,
+								},
+							}"
+						>
+							专栏首页
+						</router-link>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">
+						{{ post.title }}
+					</li>
+				</ol>
+			</nav>
 
-		<div class="post-header border-bottom">
-			<img :src="post.image && post.image.url" :alt="post.title" />
-			<h2>{{ post.title }}</h2>
-		</div>
-		<div
-			class="post-author d-flex justify-content-between py-3 align-items-center border-bottom"
-		>
-			<div class="d-flex justify-content-between">
-				<img
-					:src="
-						post.author &&
-						post.author.avatar &&
-						post.author.avatar.url
-					"
-					alt="desc"
-					class="rounded-circle mx-2 p-2 border border-1 avatar"
-				/>
-				<div>
-					<h6 class="mt-2">
-						{{ post.author && post.author.nickName }}
-					</h6>
-					<span class="text-secondary align-middle">{{
-						post.author && post.author.description
-					}}</span>
-				</div>
+			<div class="post-header border-bottom">
+				<img :src="post.image && post.image.url" :alt="post.title" />
+				<h2>{{ post.title }}</h2>
 			</div>
-			<span class="text-secondary">{{ post.createdAt }}</span>
-		</div>
-		<div class="my-5" v-html="post.content"></div>
-
-		<div class="btn-group" role="group" v-if="isEdit">
-			<router-link
-				:to="{
-					name: 'updatePost',
-					query: { id: post._id },
-					params: { post: JSON.stringify(post) },
-				}"
-				type="button"
-				class="btn btn-success px-3 shadow-none"
+			<div
+				class="post-author d-flex justify-content-between py-3 align-items-center border-bottom"
 			>
-				编辑
-			</router-link>
-			<button
-				type="button"
-				class="btn btn-danger px-3 shadow-none"
-				@click="showMadal = true"
-			>
-				删除
-			</button>
-		</div>
+				<div class="d-flex justify-content-between">
+					<img
+						:src="
+							post.author &&
+							post.author.avatar &&
+							post.author.avatar.url
+						"
+						alt="desc"
+						class="rounded-circle mx-2 p-2 border border-1 avatar"
+					/>
+					<div>
+						<h6 class="mt-2">
+							{{ post.author && post.author.nickName }}
+						</h6>
+						<span class="text-secondary align-middle">{{
+							post.author && post.author.description
+						}}</span>
+					</div>
+				</div>
+				<span class="text-secondary">{{ post.createdAt }}</span>
+			</div>
+			<div class="my-5" v-html="post.content"></div>
 
-		<modal
-			@click-ensure="handleEnsure"
-			@click-close="handleClose"
-			@click-cancel="handleCancel"
-			v-if="showMadal"
-		>
-			<p>确定要删除这篇文章吗？</p>
-		</modal>
+			<div class="btn-group" role="group" v-if="isEdit">
+				<router-link
+					:to="{
+						name: 'updatePost',
+						query: { id: post._id },
+						params: { post: JSON.stringify(post) },
+					}"
+					type="button"
+					class="btn btn-success px-3 shadow-none"
+				>
+					编辑
+				</router-link>
+				<button
+					type="button"
+					class="btn btn-danger px-3 shadow-none"
+					@click="showMadal = true"
+				>
+					删除
+				</button>
+			</div>
+
+			<modal
+				@click-ensure="handleEnsure"
+				@click-close="handleClose"
+				@click-cancel="handleCancel"
+				v-if="showMadal"
+			>
+				<p>确定要删除这篇文章吗？</p>
+			</modal>
+		</div>
 	</div>
 </template>
 

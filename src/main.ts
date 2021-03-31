@@ -19,7 +19,7 @@ axios.interceptors.response.use( async response => {
         setTimeout(() => {
             resolve(true)
             store.commit('setLoading', false)
-        }, 500)
+        }, 0)
     ])
     await delay
     store.commit('setLoading', false)

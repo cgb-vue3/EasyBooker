@@ -1,4 +1,4 @@
-# u-log
+# EasyBooker
 
 ## Project setup
 ```
