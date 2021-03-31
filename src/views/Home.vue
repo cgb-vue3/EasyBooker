@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container bg-white w-75 mt-4 shadow-lg p-4 main">
 		<div class="d-flex flex-wrap justify-content-center">
 			<svg
 				id="a6165653-2719-4fed-8ed9-8fe7d02b0919"
@@ -155,8 +155,9 @@
 				开始写文章
 			</router-link>
 		</div>
+		<column-list :ColumnList="Columns"></column-list>
 	</div>
-	<column-list :ColumnList="Columns"></column-list>
+	
 </template>
 
 <script lang="ts">

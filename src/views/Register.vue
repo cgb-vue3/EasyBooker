@@ -1,8 +1,30 @@
 <template>
-	<div class="d-flex justify-content-center">
+	<div class="d-flex justify-content-center py-4 flex-wrap">
+		<div class="w-100 text-center mb-2">
+			<svg
+				t="1617160053480"
+				class="icon"
+				viewBox="0 0 1024 1024"
+				version="1.1"
+				xmlns="http://www.w3.org/2000/svg"
+				p-id="15417"
+				width="64"
+				height="64"
+			>
+				<path
+					d="M896 185.173333a52.906667 52.906667 0 0 0-46.08-9.813333L554.666667 251.306667v608.853333l322.56-82.773333A53.333333 53.333333 0 0 0 917.333333 725.333333V226.986667a53.333333 53.333333 0 0 0-21.333333-41.813334zM469.333333 251.306667L173.226667 175.36A54.186667 54.186667 0 0 0 128 185.173333a53.333333 53.333333 0 0 0-20.48 42.666667V725.333333a53.333333 53.333333 0 0 0 40.106667 51.626667L469.333333 860.16z"
+					p-id="15418"
+					fill="#37597d"
+				></path>
+			</svg>
+			<span class="fs-3 align-middle text-secondary mx-2">EBooker</span>
+		</div>
 		<div class="register">
-			<validate-form @form-submit="onFormSubmit" class="validate-form">
-				<h3 class="py-4 text-center">注册账户</h3>
+			<validate-form
+				@form-submit="onFormSubmit"
+				class="validate-form mb-4"
+			>
+				<h3 class="py-3 mt-4 text-center">注册账户</h3>
 				<validate-input
 					title="邮箱地址"
 					:rules="EmailRules"
@@ -34,13 +56,15 @@
 					type="password"
 					placeholder="请再次输入密码"
 				></validate-input>
-				<div class="mb-4">
-					<router-link to="/login" class="link-primary fs-6"
-						>已经有账户了？去登录</router-link
-					>
-				</div>
 				<template v-slot:submit> 注册 </template>
 			</validate-form>
+			<div class="mb-4">
+				<router-link
+					to="/login"
+					class="link-primary fs-6 text-decoration-none"
+					>已经有账户了？去登录</router-link
+				>
+			</div>
 		</div>
 	</div>
 </template>
@@ -110,7 +134,7 @@ export default defineComponent({
 					},
 				}).then((res: any) => {
 					console.log(res)
-					if (res.code == 400) {
+					if (res.code == 400 || res.code == 422) {
 						createMessage(res.error, 'error', 1000)
 					}
 
@@ -156,9 +180,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 .register {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 	min-height: 500px;
 	width: 400px;
+	box-shadow: 0 0 1px 0 #666;
+	background-color: #fff;
 
 	h3 {
 		color: #5e6c84;

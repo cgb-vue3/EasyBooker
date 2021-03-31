@@ -1,5 +1,5 @@
 <template>
-	<div class="container w-75 post-detail">
+	<div class="container w-75 post-detail bg-white w-75 mt-4 shadow-lg p-4 main">
 		<nav aria-label="breadcrumb ">
 			<ol class="breadcrumb p-3">
 				<li class="breadcrumb-item">

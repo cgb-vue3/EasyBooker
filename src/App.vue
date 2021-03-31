@@ -6,10 +6,10 @@
 			</div>
 		</div>
 
-		<div class="container bg-white w-75 mt-3 shadow-lg p-3 main" v-show="!isLoading">
+		<div v-show="!isLoading">
 			<router-view></router-view>
 		</div>
-		<loading v-if="isLoading" :style="{color: '#0d6efd'}"  ></loading>
+		<loading v-if="isLoading" :style="{ color: '#0d6efd' }"></loading>
 	</div>
 </template>
 
@@ -31,7 +31,7 @@ export default defineComponent({
 		const isLoading = computed(() => store.state.loading)
 		onMounted(() => {
 			const token = store.state.token
-			if ( token && !store.state.user.isLogin) {
+			if (token && !store.state.user.isLogin) {
 				store.dispatch('getUser', token)
 			}
 		})
@@ -39,7 +39,7 @@ export default defineComponent({
 		const isError = computed(() => store.state.error)
 		return {
 			isLoading,
-			isError
+			isError,
 		}
 	},
 })
@@ -53,6 +53,12 @@ body {
 #app {
 	height: 100%;
 	padding-bottom: 100px;
-	
+
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: left bottom, right bottom;
+	background-size: calc(((100vw - 40rem) / 2) - 3.2rem),
+		calc(((100vw - 40rem) / 2) - 3.2rem), cover;
+	background-image: url(./assets/bgLeft.svg), url(./assets/bgRight.svg);
 }
 </style>
