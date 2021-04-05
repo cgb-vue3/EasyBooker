@@ -6,8 +6,9 @@ import CoumnDetail from './views/ColumnDetail.vue'
 import CreatePost from "./views/CreatePost.vue";
 import store from './store'
 
-const routerHistory = createWebHistory()
-const router = createRouter({
+const routerHistory = createWebHistory('easybooker')
+const router = createRouter(
+    {
     history: routerHistory,
     routes: [
         {
